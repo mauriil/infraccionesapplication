@@ -1,17 +1,9 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Image} from 'react-native';
+import {Text, TextInput, Button, Menu} from 'react-native-paper';
 import {
-  Text,
-  TextInput,
-  Button,
-  DatePicker,
-  Menu,
-  Divider,
-  Checkbox,
-} from 'react-native-paper';
-import ImagePicker, {
+  CameraOptions,
   ImagePickerResponse,
-  ImagePickerOptions,
   launchCamera,
 } from 'react-native-image-picker';
 
@@ -51,7 +43,7 @@ const CrearMultaScreen = () => {
   };
 
   const handleImagePicker = () => {
-    const options: ImagePickerOptions = {
+    const options: CameraOptions = {
       mediaType: 'photo',
       quality: 0.7,
       includeBase64: false,
@@ -78,7 +70,7 @@ const CrearMultaScreen = () => {
     // Implement your form submission logic here
     console.log({
       dominio,
-      dateTime,
+      dateTime: dateTime.toISOString(),
       nombrePropietario,
       nombreConductor,
       domicilioConductor,
@@ -89,6 +81,7 @@ const CrearMultaScreen = () => {
       referenciaUbicacion,
       infracciones,
       nroInfraccion,
+      selectedImages,
     });
   };
 
@@ -110,18 +103,20 @@ const CrearMultaScreen = () => {
         style={styles.input}
       />
 
-      {/* Add other TextInput components for the remaining fields */}
+      <TextInput
+        label="Número de Infracción"
+        value={nroInfraccion}
+        onChangeText={text => setNroInfraccion(text)}
+        style={styles.input}
+      />
 
       <Menu
         visible={visible}
         onDismiss={closeMenu}
+        style={styles.menu}
         anchor={
-          <Button
-            icon="menu"
-            mode="outlined"
-            onPress={openMenu}
-            style={styles.menuButton}>
-            Seleccionar Infracciones
+          <Button mode="outlined" onPress={openMenu} style={styles.menuButton}>
+            ↓ Seleccionar Infracciones
           </Button>
         }>
         {/** Replace with your actual list of infracciones */}
@@ -151,13 +146,6 @@ const CrearMultaScreen = () => {
           ))}
         </View>
       )}
-
-      <TextInput
-        label="Número de Infracción"
-        value={nroInfraccion}
-        onChangeText={text => setNroInfraccion(text)}
-        style={styles.input}
-      />
 
       <Button
         mode="contained"
@@ -190,6 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingBottom: 0,
+    backgroundColor: '#FAD201',
   },
   title: {
     fontSize: 24,
@@ -198,6 +187,13 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
+    backgroundColor: 'lightgrey',
+  },
+  menu: {
+    marginTop: 40,
+    width: '80%',
+    height: 'auto',
+    
   },
   infraccionesContainer: {
     marginTop: 16,
@@ -223,6 +219,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
+    backgroundColor: 'lightgrey',
   },
   imageContainer: {
     marginBottom: 16,
