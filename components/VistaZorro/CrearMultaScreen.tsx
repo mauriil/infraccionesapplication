@@ -38,16 +38,16 @@ const CrearMultaScreen = () => {
 
   const handleInfraccionSelect = infraccionId => {
     // Add the selected infraction to the array
+    // avoidd duplicates
+    if (infracciones.includes(infraccionId)) {
+      return;
+    }
     setInfracciones([...infracciones, infraccionId]);
   };
 
   const handleRemoveInfraccion = infraccionId => {
     // Remove the selected infraction from the array
     setInfracciones(infracciones.filter(id => id !== infraccionId));
-  };
-
-  const handleDateTimeChange = date => {
-    setDateTime(date);
   };
 
   const handleImagePicker = () => {
@@ -58,10 +58,6 @@ const CrearMultaScreen = () => {
     };
 
     launchCamera(options, (response: ImagePickerResponse) => {
-      console.log(
-        '🚀 ~ launchCamera ~ response.assets[0].uri:',
-        response.assets[0].uri,
-      );
       if (response.didCancel) {
         console.log('Camera cancelled');
       } else if (response.error) {
@@ -70,6 +66,12 @@ const CrearMultaScreen = () => {
         setSelectedImages([...selectedImages, response.assets[0].uri]);
       }
     });
+  };
+
+  const handleRemoveImage = index => {
+    const updatedImages = [...selectedImages];
+    updatedImages.splice(index, 1);
+    setSelectedImages(updatedImages);
   };
 
   const handleSubmit = () => {
@@ -113,7 +115,15 @@ const CrearMultaScreen = () => {
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={<Button onPress={openMenu}>Seleccionar Infracciones</Button>}>
+        anchor={
+          <Button
+            icon="menu"
+            mode="outlined"
+            onPress={openMenu}
+            style={styles.menuButton}>
+            Seleccionar Infracciones
+          </Button>
+        }>
         {/** Replace with your actual list of infracciones */}
         <Menu.Item
           onPress={() => handleInfraccionSelect('infraccion1')}
@@ -153,18 +163,19 @@ const CrearMultaScreen = () => {
         mode="contained"
         onPress={handleImagePicker}
         style={styles.button}>
-        Select Images
+        Sacar foto
       </Button>
 
       {selectedImages.map((imageUri, index) => (
-        <>
-          <Text>Foto 1</Text>
-          <Image
-            key={index}
-            source={{uri: imageUri}}
-            style={styles.selectedImage}
-          />
-        </>
+        <View key={index} style={styles.imageContainer}>
+          <Image source={{uri: imageUri}} style={styles.selectedImage} />
+          <Button
+            mode="outlined"
+            onPress={() => handleRemoveImage(index)}
+            style={styles.removeButton}>
+            Eliminar Foto
+          </Button>
+        </View>
       ))}
 
       <Button mode="contained" onPress={handleSubmit} style={styles.button}>
@@ -178,6 +189,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    paddingBottom: 0,
   },
   title: {
     fontSize: 24,
@@ -199,6 +211,30 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 16,
+    marginBottom: 30,
+  },
+  menuButton: {
+    marginTop: 4,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#3F51B5', // Customize the border color
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  imageContainer: {
+    marginBottom: 16,
+  },
+  selectedImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  removeButton: {
+    marginTop: 8,
   },
 });
 
