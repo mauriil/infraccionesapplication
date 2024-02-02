@@ -6,6 +6,10 @@ import VistaZorro from './components/VistaZorro/Inicio';
 import CrearMultaScreen from './components/VistaZorro/CrearMultaScreen';
 import HistorialMultasScreen from './components/VistaZorro/HistorialMultas';
 import DetalleMultaScreen from './components/VistaZorro/MultaDetalle';
+import VistaCorralon from './components/VistaCorralon/Inicio';
+import HistorialActasScreen from './components/VistaCorralon/HistorialActas';
+import DetalleActaScreen from './components/VistaCorralon/ActaDetalle';
+import CrearActaScreen from './components/VistaCorralon/CrearActa';
 import {Provider as PaperProvider} from 'react-native-paper';
 import CustomTheme from './styles';
 
@@ -62,7 +66,48 @@ const App = () => {
               animationEnabled: true,
             }}
           />
-          {/* <Stack.Screen name="HistorialMultasScreen" component={HistorialMultasScreen} /> */}
+
+
+          <Stack.Screen name="VistaCorralon" component={VistaCorralon} />
+          <Stack.Screen
+            name="HistorialActasScreen"
+            component={HistorialActasScreen}
+            options={{
+              title: 'Historial Actas',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="DetalleActaScreen"
+            component={DetalleActaScreen}
+            options={{
+              title: 'Historial Actas',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="CrearActaScreen"
+            component={CrearActaScreen}
+            options={{
+              title: 'Crear Multa',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

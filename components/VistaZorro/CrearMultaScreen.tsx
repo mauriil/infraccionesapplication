@@ -193,7 +193,6 @@ const styles = StyleSheet.create({
     marginTop: 40,
     width: '80%',
     height: 'auto',
-    
   },
   infraccionesContainer: {
     marginTop: 16,

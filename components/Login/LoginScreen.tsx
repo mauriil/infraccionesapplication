@@ -5,15 +5,18 @@ import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
   const handleLogin = () => {
+
+    setUsername('');
+    setPassword('');
     // Replace this with your actual login logic
     if (username === '1' && password === '1') {
       navigation.navigate('VistaZorro');
-    } else if (username === 'user2' && password === 'password2') {
-      navigation.navigate('HomeScreen2');
+    } else if (username === '2' && password === '2') {
+      navigation.navigate('VistaCorralon');
     } else {
       console.log('Invalid credentials');
     }

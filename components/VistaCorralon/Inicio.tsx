@@ -2,21 +2,16 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 
-const VistaZorro = ({navigation}) => {
-  const handleCrearMulta = () => {
-    // Navigate to the screen for creating a new ticket
-    // Replace 'CrearMultaScreen' with the actual screen name
-    navigation.navigate('CrearMultaScreen');
+const VistaCorralon = ({navigation}) => {
+  const handleCrear = () => {
+    navigation.navigate('CrearActaScreen');
   };
 
-  const handleHistorialMultas = () => {
-    // Navigate to the screen for viewing ticket history
-    // Replace 'HistorialMultasScreen' with the actual screen name
-    navigation.navigate('HistorialMultasScreen');
+  const handleHistorial = () => {
+    navigation.navigate('HistorialActasScreen');
   };
 
   const handleCerrarSesion = () => {
-    // Log out the user and navigate to the login screen
     navigation.navigate('LoginScreen');
   };
 
@@ -24,15 +19,12 @@ const VistaZorro = ({navigation}) => {
     <View style={styles.container}>
       {/* <Text style={styles.title}>Vista Zorro</Text> */}
 
-      <Button mode="contained" onPress={handleCrearMulta} style={styles.button}>
-        Crear nueva multa
+      <Button mode="contained" onPress={handleCrear} style={styles.button}>
+        Crear nueva acta de recepción
       </Button>
 
-      <Button
-        mode="contained"
-        onPress={handleHistorialMultas}
-        style={styles.button}>
-        Historial multas
+      <Button mode="contained" onPress={handleHistorial} style={styles.button}>
+        Historial de actas
       </Button>
 
       <Button
@@ -64,4 +56,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VistaZorro;
+export default VistaCorralon;
