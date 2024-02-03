@@ -1,6 +1,6 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './components/Login/LoginScreen';
 import VistaZorro from './components/VistaZorro/Inicio';
 import CrearMultaScreen from './components/VistaZorro/CrearMultaScreen';
@@ -10,7 +10,8 @@ import VistaCorralon from './components/VistaCorralon/Inicio';
 import HistorialActasScreen from './components/VistaCorralon/HistorialActas';
 import DetalleActaScreen from './components/VistaCorralon/ActaDetalle';
 import CrearActaScreen from './components/VistaCorralon/CrearActa';
-import {Provider as PaperProvider} from 'react-native-paper';
+import VistaJuez from './components/VistaJueces/Inicio';
+import { Provider as PaperProvider } from 'react-native-paper';
 import CustomTheme from './styles';
 
 const Stack = createStackNavigator();
@@ -108,6 +109,48 @@ const App = () => {
               animationEnabled: true,
             }}
           />
+
+
+          <Stack.Screen name="VistaJuez" component={VistaJuez} />
+          {/* <Stack.Screen
+            name="HistorialActasScreen"
+            component={HistorialActasScreen}
+            options={{
+              title: 'Historial Actas',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="DetalleActaScreen"
+            component={DetalleActaScreen}
+            options={{
+              title: 'Historial Actas',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="CrearActaScreen"
+            component={CrearActaScreen}
+            options={{
+              title: 'Crear Multa',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

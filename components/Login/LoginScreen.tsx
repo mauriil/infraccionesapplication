@@ -17,6 +17,8 @@ const LoginScreen = () => {
       navigation.navigate('VistaZorro');
     } else if (username === '2' && password === '2') {
       navigation.navigate('VistaCorralon');
+    } else if (username === '3' && password === '3') {
+      navigation.navigate('VistaJuez');
     } else {
       console.log('Invalid credentials');
     }
