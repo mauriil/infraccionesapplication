@@ -13,6 +13,7 @@ import CrearActaScreen from './components/VistaCorralon/CrearActa';
 import VistaJuez from './components/VistaJueces/Inicio';
 import { Provider as PaperProvider } from 'react-native-paper';
 import CustomTheme from './styles';
+import DetalleMultaParaJuezScreen from './components/VistaJueces/DetalleMultaParaJuezScreen';
 
 const Stack = createStackNavigator();
 
@@ -112,9 +113,9 @@ const App = () => {
 
 
           <Stack.Screen name="VistaJuez" component={VistaJuez} />
-          {/* <Stack.Screen
-            name="HistorialActasScreen"
-            component={HistorialActasScreen}
+          <Stack.Screen
+            name="DetalleMultaParaJuezScreen"
+            component={DetalleMultaParaJuezScreen}
             options={{
               title: 'Historial Actas',
               headerShown: true,
@@ -125,32 +126,6 @@ const App = () => {
               animationEnabled: true,
             }}
           />
-          <Stack.Screen
-            name="DetalleActaScreen"
-            component={DetalleActaScreen}
-            options={{
-              title: 'Historial Actas',
-              headerShown: true,
-              headerStyle: {
-                backgroundColor: CustomTheme.colors.primary,
-              },
-              headerTintColor: CustomTheme.colors.text,
-              animationEnabled: true,
-            }}
-          />
-          <Stack.Screen
-            name="CrearActaScreen"
-            component={CrearActaScreen}
-            options={{
-              title: 'Crear Multa',
-              headerShown: true,
-              headerStyle: {
-                backgroundColor: CustomTheme.colors.primary,
-              },
-              headerTintColor: CustomTheme.colors.text,
-              animationEnabled: true,
-            }}
-          /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

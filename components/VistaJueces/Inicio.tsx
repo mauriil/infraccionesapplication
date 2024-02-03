@@ -34,7 +34,7 @@ const VistaJuez = () => {
 
   const handleMultaPress = multa => {
     // Navigate to DetalleMultaScreen with the selected multa details
-    navigation.navigate('DetalleMultaScreen', {multa});
+    navigation.navigate('DetalleMultaParaJuezScreen', {multa});
   };
 
   const renderItem = ({item}) => (
@@ -53,7 +53,7 @@ const VistaJuez = () => {
       <View style={styles.filtersContainer}>
         <View style={styles.filterItem}>
           <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-            <Text>Fecha Inicial:</Text>
+            <Text>Fecha Desde:</Text>
             <Text>{startDate.toDateString()}</Text>
           </TouchableOpacity>
           {showStartDatePicker && (
@@ -70,7 +70,7 @@ const VistaJuez = () => {
         </View>
         <View style={styles.filterItem}>
           <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-            <Text>Fecha Final:</Text>
+            <Text>Fecha Hasta:</Text>
             <Text>{endDate.toDateString()}</Text>
           </TouchableOpacity>
           {showEndDatePicker && (
