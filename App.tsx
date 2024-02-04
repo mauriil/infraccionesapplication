@@ -14,6 +14,7 @@ import VistaJuez from './components/VistaJueces/Inicio';
 import { Provider as PaperProvider } from 'react-native-paper';
 import CustomTheme from './styles';
 import DetalleMultaParaJuezScreen from './components/VistaJueces/DetalleMultaParaJuezScreen';
+import VistaAdmin from './components/VistaAdmin/Inicio';
 
 const Stack = createStackNavigator();
 
@@ -126,6 +127,9 @@ const App = () => {
               animationEnabled: true,
             }}
           />
+
+
+          <Stack.Screen name="VistaAdmin" component={VistaAdmin} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

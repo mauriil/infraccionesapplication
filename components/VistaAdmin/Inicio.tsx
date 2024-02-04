@@ -1,0 +1,63 @@
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Button, Text} from 'react-native-paper';
+
+const VistaAdmin = ({navigation}) => {
+  const handleABMUsuarios = () => {
+    navigation.navigate('ABMUsuarios');
+  };
+  const handleABMTransportes = () => {
+    navigation.navigate('ABMTransportes');
+  }
+  const handleABMTaxis = () => {
+    navigation.navigate('ABMTaxis');
+  }
+
+  const handleCerrarSesion = () => {
+    navigation.navigate('LoginScreen');
+  };
+
+  return (
+    <View style={styles.container}>
+      <Button mode="contained" onPress={handleABMUsuarios} style={styles.button}>
+        Usuarios
+      </Button>
+
+      <Button mode="contained" onPress={handleABMTransportes} style={styles.button}>
+        Transportes
+      </Button>
+
+      <Button mode="contained" onPress={handleABMTaxis} style={styles.button}>
+        Taxis
+      </Button>
+
+      <Button
+        mode="contained"
+        onPress={handleCerrarSesion}
+        style={styles.button}>
+        Cerrar sesión
+      </Button>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+    paddingBottom: 0,
+    backgroundColor: '#FAD201',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  button: {
+    marginTop: 16,
+  },
+});
+
+export default VistaAdmin;
