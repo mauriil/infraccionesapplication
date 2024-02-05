@@ -28,7 +28,7 @@ const VistaAdmin = ({navigation}) => {
       </Button>
 
       <Button mode="contained" onPress={handleABMTaxis} style={styles.button}>
-        Taxis
+        Taxis y Remises
       </Button>
 
       <Button

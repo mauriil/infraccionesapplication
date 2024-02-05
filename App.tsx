@@ -19,6 +19,8 @@ import UsersManagement from './components/VistaAdmin/UsersManagement';
 import UserDetalle from './components/VistaAdmin/UserDetalle';
 import TransporteManagement from './components/VistaAdmin/TransporteManagement';
 import TransporteDetalle from './components/VistaAdmin/TransporteDetalle';
+import TaxiManagement from './components/VistaAdmin/TaxiManagement';
+import TaxiDetalle from './components/VistaAdmin/TaxiDetalle';
 
 const Stack = createStackNavigator();
 
@@ -179,6 +181,33 @@ const App = () => {
             component={TransporteDetalle}
             options={{
               title: 'Detalle de transporte',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="ABMTaxis"
+            component={TaxiManagement}
+            options={{
+              title: 'Taxis y Remises',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="taxiRemisDetalle"
+            component={TaxiDetalle}
+            options={{
+              title: 'Detalle',
               headerShown: true,
               headerStyle: {
                 backgroundColor: CustomTheme.colors.primary,
