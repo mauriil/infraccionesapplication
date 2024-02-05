@@ -15,6 +15,10 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import CustomTheme from './styles';
 import DetalleMultaParaJuezScreen from './components/VistaJueces/DetalleMultaParaJuezScreen';
 import VistaAdmin from './components/VistaAdmin/Inicio';
+import UsersManagement from './components/VistaAdmin/UsersManagement';
+import UserDetalle from './components/VistaAdmin/UserDetalle';
+import TransporteManagement from './components/VistaAdmin/TransporteManagement';
+import TransporteDetalle from './components/VistaAdmin/TransporteDetalle';
 
 const Stack = createStackNavigator();
 
@@ -130,6 +134,60 @@ const App = () => {
 
 
           <Stack.Screen name="VistaAdmin" component={VistaAdmin} />
+          <Stack.Screen
+            name="ABMUsuarios"
+            component={UsersManagement}
+            options={{
+              title: 'Usuarios',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="UserDetalle"
+            component={UserDetalle}
+            options={{
+              title: 'Detalle de usuario',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="ABMTransportes"
+            component={TransporteManagement}
+            options={{
+              title: 'Transportes',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="transporteDetalle"
+            component={TransporteDetalle}
+            options={{
+              title: 'Detalle de transporte',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
