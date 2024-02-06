@@ -1,9 +1,11 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { Button, Card, Paragraph, TextInput, Title } from 'react-native-paper';
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { getAllTransportes } from '../../api/transportes';
 
 const TransporteManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -26,30 +28,13 @@ const TransporteManagement: React.FC = () => {
   const [showAddTransporteFields, setShowAddTransporteFields] = useState(false);
 
   const getTransportes = async () => {
-    setTransportes([
-      {
-        numero_legajo: '123',
-        dominio_vehiculo: 'ABC123',
-        numero_motor: '456',
-        numero_chasis: '789',
-        marca_vehiculo: 'Toyota',
-        modelo_vehiculo: 'Corolla',
-        nombre_titular: 'John Doe',
-        numero_licencia_conductor: '987654',
-        nombre_conductor: 'Jane Doe',
-        poliza_seguro: 'XYZ789',
-        vtv: 'Vigente',
-        tipo_transporte: 'Carga-Descarga',
-        observaciones: 'No observations',
-      },
-      // Add more transportes as needed
-    ]);
-    // try {
-    //   const response = await axios.get('/api/transportes'); // Replace with your backend API endpoint
-    //   setTransportes(response.data);
-    // } catch (error) {
-    //   console.error('Error fetching transportes:', error);
-    // }
+    try {
+      const response = await getAllTransportes();
+      console.log("🚀 ~ getTransportes ~ response:", response)
+      setTransportes(response);
+    } catch (error) {
+      console.error('Error fetching transportes:', error);
+    }
   };
 
   const addTransporte = async () => {
@@ -130,6 +115,13 @@ const TransporteManagement: React.FC = () => {
       )}
 
       <View style={{ borderBottomColor: 'black', borderBottomWidth: 1 }} />
+
+      {(transportes.length === 0 && !showAddTransporteFields) && <Text style={{
+        textAlign: 'center',
+        marginTop: 16,
+        fontSize: 16,
+        fontWeight: 'bold',
+      }}>No hay transportes</Text>}
 
       {/* Transporte List */}
       <View style={{ marginTop: 16 }}>

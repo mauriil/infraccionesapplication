@@ -5,6 +5,7 @@ import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import { getAllUsers } from '../../api/usuarios';
 
 const UsersManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -18,17 +19,12 @@ const UsersManagement: React.FC = () => {
   const [showAddUserFields, setShowAddUserFields] = useState(false);
 
   const getUsers = async () => {
-    setUsers([
-      {name: 'User 1', email: 'asd@asd.com', tipo: 'admin'},
-      {name: 'User 2', email: 'asds@asd.com', tipo: 'admin'},
-      {name: 'User 3', email: 'asss@ss.com', tipo: 'admin'},
-    ]);
-    // try {
-    //   const response = await axios.get('/api/users'); // Replace with your backend API endpoint
-    //   setUsers(response.data);
-    // } catch (error) {
-    //   console.error('Error fetching users:', error);
-    // }
+    try {
+      const response = await getAllUsers();
+      setUsers(response);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
   };
 
   const addUser = async () => {
