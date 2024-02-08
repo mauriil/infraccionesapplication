@@ -5,7 +5,8 @@ import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
-import { getAllUsers } from '../../api/usuarios';
+import {getAllUsers} from '../../api/usuarios';
+import {Picker} from '@react-native-picker/picker';
 
 const UsersManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -17,6 +18,11 @@ const UsersManagement: React.FC = () => {
     tipo: '',
   });
   const [showAddUserFields, setShowAddUserFields] = useState(false);
+  const tiposUsuario = ['Administrador', 'Juez', 'Corralón', 'Inspector'];
+
+  const setTipoUser = (itemValue: string) => {
+    setNewUser({...newUser, tipo: itemValue});
+  }
 
   const getUsers = async () => {
     try {
@@ -83,12 +89,15 @@ const UsersManagement: React.FC = () => {
             onChangeText={value => setNewUser({...newUser, password: value})}
             style={styles.input}
           />
-          <TextInput
-            label="Tipo"
-            value={newUser.tipo}
-            onChangeText={value => setNewUser({...newUser, tipo: value})}
-            style={styles.input}
-          />
+          <Text style={styles.label}>Tipo</Text>
+          <Picker
+            selectedValue={newUser.tipo}
+            onValueChange={itemValue => setTipoUser(itemValue)}
+            style={styles.picker}>
+            {tiposUsuario.map((tipo, index) => (
+              <Picker.Item key={index} label={tipo} value={tipo} />
+            ))}
+          </Picker>
           <Button mode="contained" onPress={() => addUser()}>
             Guardar
           </Button>
@@ -140,6 +149,15 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 16,
     backgroundColor: 'lightgrey',
+  },
+  picker: {
+    height: 40,
+    marginBottom: 16,
+    backgroundColor: 'lightgrey',
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
   },
 });
 
