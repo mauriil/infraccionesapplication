@@ -110,7 +110,7 @@ const App = () => {
             name="CrearActaScreen"
             component={CrearActaScreen}
             options={{
-              title: 'Crear Multa',
+              title: 'Crear Acta',
               headerShown: true,
               headerStyle: {
                 backgroundColor: CustomTheme.colors.primary,

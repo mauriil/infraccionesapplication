@@ -50,8 +50,6 @@ const CrearActaScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Crear Acta</Text>
-
       <TextInput
         label="Nombre Receptor"
         value={nombreReceptor}
