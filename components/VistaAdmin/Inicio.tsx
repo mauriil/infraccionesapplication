@@ -17,6 +17,10 @@ const VistaAdmin = ({navigation}) => {
     navigation.navigate('LoginScreen');
   };
 
+  const handleABMTurismo = () => {
+    navigation.navigate('ABMTurismo');
+  }
+
   return (
     <View style={styles.container}>
       <Button mode="contained" onPress={handleABMUsuarios} style={styles.button}>
@@ -29,6 +33,10 @@ const VistaAdmin = ({navigation}) => {
 
       <Button mode="contained" onPress={handleABMTaxis} style={styles.button}>
         Taxis y Remises
+      </Button>
+
+      <Button mode="contained" onPress={handleABMTurismo} style={styles.button}>
+        Turismo
       </Button>
 
       <Button

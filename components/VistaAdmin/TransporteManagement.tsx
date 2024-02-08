@@ -30,7 +30,6 @@ const TransporteManagement: React.FC = () => {
   const getTransportes = async () => {
     try {
       const response = await getAllTransportes();
-      console.log("🚀 ~ getTransportes ~ response:", response)
       setTransportes(response);
     } catch (error) {
       console.error('Error fetching transportes:', error);

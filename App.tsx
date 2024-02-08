@@ -21,6 +21,8 @@ import TransporteManagement from './components/VistaAdmin/TransporteManagement';
 import TransporteDetalle from './components/VistaAdmin/TransporteDetalle';
 import TaxiManagement from './components/VistaAdmin/TaxiManagement';
 import TaxiDetalle from './components/VistaAdmin/TaxiDetalle';
+import TurismoManagement from './components/VistaAdmin/TurismoManagement';
+import TurismoDetalle from './components/VistaAdmin/TurismoDetalle';
 
 const Stack = createStackNavigator();
 
@@ -206,6 +208,33 @@ const App = () => {
           <Stack.Screen
             name="taxiRemisDetalle"
             component={TaxiDetalle}
+            options={{
+              title: 'Detalle',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+
+          <Stack.Screen
+            name="ABMTurismo"
+            component={TurismoManagement}
+            options={{
+              title: 'Turismo',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="turismoDetalle"
+            component={TurismoDetalle}
             options={{
               title: 'Detalle',
               headerShown: true,
