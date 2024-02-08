@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { Button, Card, Paragraph, TextInput, Title } from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { getAllTaxiRemises } from '../../api/taxis';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import {getAllTaxiRemises} from '../../api/taxis';
 
 const TaxiRemisManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -30,8 +30,8 @@ const TaxiRemisManagement: React.FC = () => {
 
   const getTaxiRemises = async () => {
     try {
-      const taxiRemises = await getAllTaxiRemises();
-      setTaxiRemises(taxiRemises);
+      const response = await getAllTaxiRemises();
+      setTaxiRemises(response);
     } catch (error) {
       console.error('Error fetching taxiRemises:', error);
     }
@@ -74,7 +74,7 @@ const TaxiRemisManagement: React.FC = () => {
   };
 
   const handlePress = (taxiRemis: any) => {
-    navigation.navigate('taxiRemisDetalle', { taxiRemis });
+    navigation.navigate('taxiRemisDetalle', {taxiRemis});
   };
 
   useEffect(() => {
@@ -84,7 +84,8 @@ const TaxiRemisManagement: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Toggle Button */}
-      <Button onPress={() => setShowAddTaxiRemisFields(!showAddTaxiRemisFields)}>
+      <Button
+        onPress={() => setShowAddTaxiRemisFields(!showAddTaxiRemisFields)}>
         {showAddTaxiRemisFields ? 'Cancelar' : 'Añadir TaxiRemis'}
       </Button>
 
@@ -94,19 +95,25 @@ const TaxiRemisManagement: React.FC = () => {
           <TextInput
             label="Número de Legajo"
             value={newTaxiRemis.numero_legajo}
-            onChangeText={(value) => setNewTaxiRemis({ ...newTaxiRemis, numero_legajo: value })}
+            onChangeText={value =>
+              setNewTaxiRemis({...newTaxiRemis, numero_legajo: value})
+            }
             style={styles.input}
           />
           <TextInput
             label="Dominio del Vehículo"
             value={newTaxiRemis.dominio_vehiculo}
-            onChangeText={(value) => setNewTaxiRemis({ ...newTaxiRemis, dominio_vehiculo: value })}
+            onChangeText={value =>
+              setNewTaxiRemis({...newTaxiRemis, dominio_vehiculo: value})
+            }
             style={styles.input}
           />
           <TextInput
             label="Número de Motor"
             value={newTaxiRemis.numero_motor}
-            onChangeText={(value) => setNewTaxiRemis({ ...newTaxiRemis, numero_motor: value })}
+            onChangeText={value =>
+              setNewTaxiRemis({...newTaxiRemis, numero_motor: value})
+            }
             style={styles.input}
           />
           {/* Add more fields as needed */}
@@ -116,21 +123,26 @@ const TaxiRemisManagement: React.FC = () => {
         </View>
       )}
 
-      <View style={{ borderBottomColor: 'black', borderBottomWidth: 1 }} />
+      <View style={{borderBottomColor: 'black', borderBottomWidth: 1}} />
 
-      {(taxiRemis.length === 0 && !showAddTaxiRemisFields) && <Text style={{
-        textAlign: 'center',
-        marginTop: 16,
-        fontSize: 16,
-        fontWeight: 'bold',
-      }}>No hay Taxis-Remises</Text>}
+      {taxiRemises.length === 0 && !showAddTaxiRemisFields && (
+        <Text
+          style={{
+            textAlign: 'center',
+            marginTop: 16,
+            fontSize: 16,
+            fontWeight: 'bold',
+          }}>
+          No hay Taxis-Remises
+        </Text>
+      )}
 
       {/* TaxiRemis List */}
-      <View style={{ marginTop: 16 }}>
+      <View style={{marginTop: 16}}>
         <FlatList
           data={taxiRemises}
-          keyExtractor={(taxiRemis) => taxiRemis._id}
-          renderItem={({ item: taxiRemis }) => (
+          keyExtractor={taxiRemis => taxiRemis._id}
+          renderItem={({item: taxiRemis}) => (
             <TouchableOpacity onPress={() => handlePress(taxiRemis)}>
               <Card style={styles.card}>
                 <Card.Content>
