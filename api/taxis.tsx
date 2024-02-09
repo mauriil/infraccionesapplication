@@ -10,3 +10,12 @@ export const getAllTaxiRemises = async () => {
   });
   return response.data;
 };
+
+export const createNewTaxiRemis = async (taxiRemis) => {
+  const response = await axios.post(API_URL, taxiRemis, {
+    headers: {
+      Authorization: `Bearer ${global.loggedUser.token}`,
+    },
+  });
+  return response.data;
+}

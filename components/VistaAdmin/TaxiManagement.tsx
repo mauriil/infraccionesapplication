@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
-import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { Button, Card, Paragraph, TextInput, Title } from 'react-native-paper';
 import axios from 'axios';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
-import {getAllTaxiRemises} from '../../api/taxis';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { createNewTaxiRemis, getAllTaxiRemises } from '../../api/taxis';
+import { Picker } from '@react-native-picker/picker';
 
 const TaxiRemisManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -39,7 +40,7 @@ const TaxiRemisManagement: React.FC = () => {
 
   const addTaxiRemis = async () => {
     try {
-      await axios.post('/api/taxiRemises', newTaxiRemis); // Replace with your backend API endpoint
+      await createNewTaxiRemis(newTaxiRemis);
       setNewTaxiRemis({
         numero_legajo: '',
         dominio_vehiculo: '',
@@ -74,7 +75,7 @@ const TaxiRemisManagement: React.FC = () => {
   };
 
   const handlePress = (taxiRemis: any) => {
-    navigation.navigate('taxiRemisDetalle', {taxiRemis});
+    navigation.navigate('taxiRemisDetalle', { taxiRemis });
   };
 
   useEffect(() => {
@@ -91,12 +92,12 @@ const TaxiRemisManagement: React.FC = () => {
 
       {/* Add TaxiRemis Form (conditionally rendered based on showAddTaxiRemisFields state) */}
       {showAddTaxiRemisFields && (
-        <View>
+        <ScrollView>
           <TextInput
             label="Número de Legajo"
             value={newTaxiRemis.numero_legajo}
             onChangeText={value =>
-              setNewTaxiRemis({...newTaxiRemis, numero_legajo: value})
+              setNewTaxiRemis({ ...newTaxiRemis, numero_legajo: value })
             }
             style={styles.input}
           />
@@ -104,7 +105,7 @@ const TaxiRemisManagement: React.FC = () => {
             label="Dominio del Vehículo"
             value={newTaxiRemis.dominio_vehiculo}
             onChangeText={value =>
-              setNewTaxiRemis({...newTaxiRemis, dominio_vehiculo: value})
+              setNewTaxiRemis({ ...newTaxiRemis, dominio_vehiculo: value })
             }
             style={styles.input}
           />
@@ -112,18 +113,137 @@ const TaxiRemisManagement: React.FC = () => {
             label="Número de Motor"
             value={newTaxiRemis.numero_motor}
             onChangeText={value =>
-              setNewTaxiRemis({...newTaxiRemis, numero_motor: value})
+              setNewTaxiRemis({ ...newTaxiRemis, numero_motor: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Número de Chasis"
+            value={newTaxiRemis.numero_chasis}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, numero_chasis: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Marca del Vehículo"
+            value={newTaxiRemis.marca_vehiculo}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, marca_vehiculo: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Modelo del Vehículo"
+            value={newTaxiRemis.modelo_vehiculo}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, modelo_vehiculo: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Nombre del Titular"
+            value={newTaxiRemis.nombre_titular}
+            onChangeText={value =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                nombre_titular: value,
+              })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Número de Licencia del Conductor"
+            value={newTaxiRemis.numero_licencia_conductor}
+            onChangeText={value =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                numero_licencia_conductor: value,
+              })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Nombre del Conductor"
+            value={newTaxiRemis.nombre_conductor}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, nombre_conductor: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Póliza de Seguro"
+            value={newTaxiRemis.poliza_seguro}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, poliza_seguro: value })
+            }
+            style={styles.input}
+          />
+          <Text style={styles.label}>VTV</Text>
+          <Picker
+            selectedValue={newTaxiRemis.vtv}
+            onValueChange={itemValue =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                vtv: itemValue,
+              })
+            }
+            style={styles.picker}>
+            <Picker.Item label="Vigente" value="Vigente" />
+            <Picker.Item label="Vencida" value="Vencida" />
+          </Picker>
+          <Text style={styles.label}>Revisión de Salud</Text>
+          <Picker
+            selectedValue={newTaxiRemis.revision_salud}
+            onValueChange={itemValue =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                revision_salud: itemValue,
+              })
+            }
+            style={styles.picker}>
+            <Picker.Item label="Vigente" value="Vigente" />
+            <Picker.Item label="Pendiente" value="Pendiente" />
+          </Picker>
+          <Text style={styles.label}>Desinfección Vehicular</Text>
+          <Picker
+            selectedValue={newTaxiRemis.desinfeccion_vehicular}
+            onValueChange={itemValue =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                desinfeccion_vehicular: itemValue,
+              })
+            }
+            style={styles.picker}>
+            <Picker.Item label="Regular" value="Regular" />
+            <Picker.Item label="Pendiente" value="Pendiente" />
+          </Picker>
+          <TextInput
+            label="Taxímetro"
+            value={newTaxiRemis.taximetro}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, taximetro: value })
+            }
+            style={styles.input}
+          />
+          <TextInput
+            label="Observaciones"
+            value={newTaxiRemis.observaciones}
+            onChangeText={value =>
+              setNewTaxiRemis({ ...newTaxiRemis, observaciones: value })
             }
             style={styles.input}
           />
           {/* Add more fields as needed */}
-          <Button mode="contained" onPress={() => addTaxiRemis()}>
+          <Button mode="contained" onPress={() => addTaxiRemis()} style={{
+            marginBottom: 100,
+          }}>
             Guardar
           </Button>
-        </View>
+        </ScrollView>
       )}
 
-      <View style={{borderBottomColor: 'black', borderBottomWidth: 1}} />
+      <View style={{ borderBottomColor: 'black', borderBottomWidth: 1 }} />
 
       {taxiRemises.length === 0 && !showAddTaxiRemisFields && (
         <Text
@@ -138,24 +258,26 @@ const TaxiRemisManagement: React.FC = () => {
       )}
 
       {/* TaxiRemis List */}
-      <View style={{marginTop: 16}}>
-        <FlatList
-          data={taxiRemises}
-          keyExtractor={taxiRemis => taxiRemis._id}
-          renderItem={({item: taxiRemis}) => (
-            <TouchableOpacity onPress={() => handlePress(taxiRemis)}>
-              <Card style={styles.card}>
-                <Card.Content>
-                  <Title>{taxiRemis.nombre_titular}</Title>
-                  <Paragraph>
-                    {taxiRemis.dominio_vehiculo} - {taxiRemis.tipo_transporte}
-                  </Paragraph>
-                </Card.Content>
-              </Card>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+      {!showAddTaxiRemisFields && taxiRemises.length > 0 && (
+        <View style={{ marginTop: 16 }}>
+          <FlatList
+            data={taxiRemises}
+            keyExtractor={taxiRemis => taxiRemis._id}
+            renderItem={({ item: taxiRemis }) => (
+              <TouchableOpacity onPress={() => handlePress(taxiRemis)}>
+                <Card style={styles.card}>
+                  <Card.Content>
+                    <Title>{taxiRemis.nombre_titular}</Title>
+                    <Paragraph>
+                      {taxiRemis.dominio_vehiculo} - {taxiRemis.tipo_transporte}
+                    </Paragraph>
+                  </Card.Content>
+                </Card>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -172,6 +294,11 @@ const styles = StyleSheet.create({
   },
   card: {
     marginVertical: 8,
+  },
+  picker: {
+    height: 40,
+    marginBottom: 16,
+    backgroundColor: 'lightgrey',
   },
 });
 
