@@ -1,116 +1,61 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
-import {TouchableOpacity, FlatList} from 'react-native-gesture-handler';
-import {
-  Button,
-  Card,
-  Title,
-  Paragraph,
-  DatePick,
-  TextInput,
-} from 'react-native-paper';
-import DatePicker from '@react-native-community/datetimepicker';
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {Button, Text} from 'react-native-paper';
 
-const VistaJuez = () => {
-  const navigation = useNavigation();
-
-  const [historialMultas, setHistorialMultas] = useState([
-    // Your historical violations data here
-    {id: '1', date: '2022-02-01 (435)', description: 'Exceso de velocidad'},
-    {
-      id: '2',
-      date: '2022-01-15 (436)',
-      description: 'Estacionamiento prohibido',
-    },
-    // Add more historical violations as needed
-  ]);
-
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [infractionNumber, setInfractionNumber] = useState('');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
-  const handleMultaPress = multa => {
-    // Navigate to DetalleMultaScreen with the selected multa details
-    navigation.navigate('DetalleMultaParaJuezScreen', {multa});
+const VistaJuez = ({navigation}) => {
+  const handleCrearMulta = () => {
+    // Navigate to the screen for creating a new ticket
+    // Replace 'CrearMultaScreen' with the actual screen name
+    navigation.navigate('CrearMultaScreen');
   };
 
-  const renderItem = ({item}) => (
-    <TouchableOpacity onPress={() => handleMultaPress(item)}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title>{item.date}</Title>
-          <Paragraph>{item.description}</Paragraph>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  );
+  const handleHistorialMultas = () => {
+    // Navigate to the screen for viewing ticket history
+    // Replace 'HistorialMultasScreen' with the actual screen name
+    navigation.navigate('VerMultaParaJuezScreen');
+  };
+
+  const handleAdminInfracciones = () => {
+    // Navigate to the screen for viewing ticket history
+    // Replace 'HistorialMultasScreen' with the actual screen name
+    navigation.navigate('AdminInfraccionesParaJuezScreen');
+  };
+
+  const handleAdminUnidadFija = () => {
+    // Navigate to the screen for viewing ticket history
+    // Replace 'HistorialMultasScreen' with the actual screen name
+    navigation.navigate('AdminUnidadFijaParaJuezScreen');
+  };
+
+  const handleCerrarSesion = () => {
+    // Log out the user and navigate to the login screen
+    navigation.navigate('LoginScreen');
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.filtersContainer}>
-        <View style={styles.filterItem}>
-          <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-            <Text>Fecha Desde:</Text>
-            <Text>{startDate.toDateString()}</Text>
-          </TouchableOpacity>
-          {showStartDatePicker && (
-            <DatePicker
-              value={startDate}
-              onChange={(event, date) => {
-                setStartDate(date || startDate);
-                setShowStartDatePicker(false);
-              }}
-              mode="date"
-              style={{width: 320, backgroundColor: 'white'}}
-            />
-          )}
-        </View>
-        <View style={styles.filterItem}>
-          <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-            <Text>Fecha Hasta:</Text>
-            <Text>{endDate.toDateString()}</Text>
-          </TouchableOpacity>
-          {showEndDatePicker && (
-            <DatePicker
-              value={endDate}
-              onChange={(event, date) => {
-                setEndDate(date || endDate);
-                setShowEndDatePicker(false);
-              }}
-              mode="date"
-              style={{width: 200, borderWidth: 1, padding: 8, height: 40}}
-            />
-          )}
-        </View>
-      </View>
-      <View style={styles.filtersContainer}>
-        <View style={styles.filterItem}>
-          <Text>Nro. Multa:</Text>
-          <TextInput
-            value={infractionNumber}
-            onChangeText={text => setInfractionNumber(text)}
-            placeholder="Ingrese el número de multa"
-            keyboardType="numeric"
-            style={{width: '100%', borderWidth: 1, padding: 8}}
-          />
-        </View>
-      </View>
+      {/* <Text style={styles.title}>Vista Zorro</Text> */}
 
-      {historialMultas.length > 0 ? (
-        <FlatList
-          data={historialMultas}
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderItem}
-        />
-      ) : (
-        <Text>No hay multas en el historial.</Text>
-      )}
+      <Button
+        mode="contained"
+        onPress={handleHistorialMultas}
+        style={styles.button}>
+        Ver multas
+      </Button>
 
-      <Button mode="contained" onPress={() => console.log('View more')}>
-        Cargar Más
+      <Button mode="contained" onPress={handleAdminInfracciones} style={styles.button}>
+        Administrar nomencladores
+      </Button>
+
+      <Button mode="contained" onPress={handleAdminUnidadFija} style={styles.button}>
+        Valor de unidad fija
+      </Button>
+
+      <Button
+        mode="contained"
+        onPress={handleCerrarSesion}
+        style={styles.button}>
+        Cerrar sesión
       </Button>
     </View>
   );
@@ -119,26 +64,19 @@ const VistaJuez = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    justifyContent: 'center',
+    padding: 24,
+    paddingBottom: 0,
     backgroundColor: '#FAD201',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 24,
+    textAlign: 'center',
   },
-  card: {
-    marginVertical: 8,
-  },
-  filtersContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  filterItem: {
-    flex: 1,
-    marginRight: 8,
+  button: {
+    marginTop: 16,
   },
 });
 

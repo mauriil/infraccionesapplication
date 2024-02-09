@@ -9,8 +9,6 @@ const DetalleMultaParaJuezScreen = ({route}) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Detalles de la Multa</Text>
-
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Fecha:</Text>
         <Text>{multa.date}</Text>

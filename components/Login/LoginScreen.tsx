@@ -2,25 +2,37 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { login } from '../../api/login';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
 
-    setUsername('');
-    setPassword('');
-    // Replace this with your actual login logic
-    if (username === '1' && password === '1') {
-      navigation.navigate('VistaZorro');
-    } else if (username === '2' && password === '2') {
-      navigation.navigate('VistaCorralon');
-    } else if (username === '3' && password === '3') {
-      navigation.navigate('VistaJuez');
-    } else if (username === '4' && password === '4') {
-      navigation.navigate('VistaAdmin');
+    const loginResponse = await login(username, password);
+
+    if (loginResponse) {
+      setUsername('');
+      setPassword('');
+
+      switch (loginResponse.user.tipo) {
+        case 'Inspector':
+          navigation.navigate('VistaZorro');
+          break;
+        case 'Corralon':
+          navigation.navigate('VistaCorralon');
+          break;
+        case 'Juez':
+          navigation.navigate('VistaJuez');
+          break;
+        case 'Administrador':
+          navigation.navigate('VistaAdmin');
+          break;
+        default:
+          console.log('Invalid user type');
+      }
     } else {
       console.log('Invalid credentials');
     }

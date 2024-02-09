@@ -23,6 +23,9 @@ import TaxiManagement from './components/VistaAdmin/TaxiManagement';
 import TaxiDetalle from './components/VistaAdmin/TaxiDetalle';
 import TurismoManagement from './components/VistaAdmin/TurismoManagement';
 import TurismoDetalle from './components/VistaAdmin/TurismoDetalle';
+import ListarMultasVistaJuez from './components/VistaJueces/ListarMultas';
+import InfraccionesManagement from './components/VistaJueces/InfraccionManagement';
+import UnidadFija from './components/VistaJueces/UnidadFija';
 
 const Stack = createStackNavigator();
 
@@ -123,10 +126,49 @@ const App = () => {
 
           <Stack.Screen name="VistaJuez" component={VistaJuez} />
           <Stack.Screen
+            name="VerMultaParaJuezScreen"
+            component={ListarMultasVistaJuez}
+            options={{
+              title: 'Historial Multas',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
             name="DetalleMultaParaJuezScreen"
             component={DetalleMultaParaJuezScreen}
             options={{
-              title: 'Historial Actas',
+              title: 'Detalles de la Multa',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="AdminInfraccionesParaJuezScreen"
+            component={InfraccionesManagement}
+            options={{
+              title: 'Administrar nomencladores',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="AdminUnidadFijaParaJuezScreen"
+            component={UnidadFija}
+            options={{
+              title: 'Administrar nomencladores',
               headerShown: true,
               headerStyle: {
                 backgroundColor: CustomTheme.colors.primary,

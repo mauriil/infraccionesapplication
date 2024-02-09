@@ -16,13 +16,20 @@ const UsersManagement: React.FC = () => {
     email: '',
     password: '',
     tipo: '',
+    nombre_hotel: '',
   });
   const [showAddUserFields, setShowAddUserFields] = useState(false);
-  const tiposUsuario = ['Administrador', 'Juez', 'Corralón', 'Inspector'];
+  const tiposUsuario = [
+    'Administrador',
+    'Juez',
+    'Corralón',
+    'Inspector',
+    'Turismo',
+  ];
 
   const setTipoUser = (itemValue: string) => {
     setNewUser({...newUser, tipo: itemValue});
-  }
+  };
 
   const getUsers = async () => {
     try {
@@ -98,6 +105,16 @@ const UsersManagement: React.FC = () => {
               <Picker.Item key={index} label={tipo} value={tipo} />
             ))}
           </Picker>
+          {newUser.tipo === 'Turismo' && (
+            <TextInput
+              label="Nombre del hotel"
+              value={newUser.nombre_hotel}
+              onChangeText={value =>
+                setNewUser({...newUser, nombre_hotel: value})
+              }
+              style={styles.input}
+            />
+          )}
           <Button mode="contained" onPress={() => addUser()}>
             Guardar
           </Button>
