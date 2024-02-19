@@ -1,3 +1,3 @@
-const API_URL = 'https://infracciones-backend-app-pltmo.ondigitalocean.app/';
+const API_URL = 'http://10.0.2.2:3000/';
 
 export default API_URL;

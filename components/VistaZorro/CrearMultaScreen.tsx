@@ -22,6 +22,7 @@ const CrearMultaScreen = () => {
   const [nroInfraccion, setNroInfraccion] = useState('');
   const [dateTime, setDateTime] = useState(new Date());
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImagesToUpload, setSelectedImagesToUpload] = useState([]);
 
   const [visible, setVisible] = useState(false);
 
@@ -57,6 +58,7 @@ const CrearMultaScreen = () => {
         console.error('Camera error:', response.error);
       } else {
         setSelectedImages([...selectedImages, response.assets[0].uri]);
+        setSelectedImagesToUpload([...selectedImagesToUpload, response.assets[0]]);
       }
     });
   };
@@ -65,15 +67,17 @@ const CrearMultaScreen = () => {
     const updatedImages = [...selectedImages];
     updatedImages.splice(index, 1);
     setSelectedImages(updatedImages);
+    const updatedImagesToUpload = [...selectedImagesToUpload];
+    updatedImagesToUpload.splice(index, 1);
+    setSelectedImagesToUpload(updatedImagesToUpload);
   };
 
   const uploadImages = async () => {
-    return await uploadImagesToS3(selectedImages);
+    return await uploadImagesToS3(selectedImagesToUpload);
   };
 
   const handleSubmit = async () => {
     const imagesUrl = await uploadImages();
-    setSelectedImages(imagesUrl);
     console.log({
       dominio,
       dateTime: dateTime.toISOString(),
@@ -87,7 +91,7 @@ const CrearMultaScreen = () => {
       referenciaUbicacion,
       infracciones,
       nroInfraccion,
-      selectedImages,
+      selectedImages: imagesUrl,
     });
   };
 
