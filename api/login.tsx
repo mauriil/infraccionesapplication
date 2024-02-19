@@ -1,10 +1,9 @@
 import axios from 'axios';
-
-const API_URL = 'http://10.0.2.2:3000/users';
+import API_URL from './baseUrl';
 
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { email: username, password });
+    const response = await axios.post(`${API_URL}users/login`, { email: username, password });
     const loggedUser = response.data;
 
     global.loggedUser = loggedUser;

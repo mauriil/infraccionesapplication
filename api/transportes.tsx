@@ -1,9 +1,8 @@
 import axios from 'axios';
-
-const API_URL = 'http://10.0.2.2:3000/transporte';
+import API_URL from './baseUrl';
 
 export const getAllTransportes = async () => {
-  const response = await axios.get(API_URL, {
+  const response = await axios.get(`${API_URL}transporte`, {
     headers: {
       Authorization: `Bearer ${global.loggedUser.token}`,
     },
