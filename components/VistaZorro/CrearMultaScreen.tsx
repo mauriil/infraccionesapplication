@@ -6,6 +6,7 @@ import {
   ImagePickerResponse,
   launchCamera,
 } from 'react-native-image-picker';
+import { uploadImagesToS3 } from '../../api/aws';
 
 const CrearMultaScreen = () => {
   const [dominio, setDominio] = useState('');
@@ -66,8 +67,13 @@ const CrearMultaScreen = () => {
     setSelectedImages(updatedImages);
   };
 
-  const handleSubmit = () => {
-    // Implement your form submission logic here
+  const uploadImages = async () => {
+    return await uploadImagesToS3(selectedImages);
+  };
+
+  const handleSubmit = async () => {
+    const imagesUrl = await uploadImages();
+    setSelectedImages(imagesUrl);
     console.log({
       dominio,
       dateTime: dateTime.toISOString(),
