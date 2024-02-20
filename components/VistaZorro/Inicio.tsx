@@ -6,7 +6,7 @@ const VistaZorro = ({navigation}) => {
   const handleCrearMulta = () => {
     // Navigate to the screen for creating a new ticket
     // Replace 'CrearMultaScreen' with the actual screen name
-    navigation.navigate('CrearMultaScreen');
+    navigation.navigate('CrearMultaScreen', navigation);
   };
 
   const handleHistorialMultas = () => {

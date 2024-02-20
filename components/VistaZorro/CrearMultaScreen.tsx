@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, Image} from 'react-native';
 import {Text, TextInput, Button, Menu} from 'react-native-paper';
 import {
@@ -6,9 +6,12 @@ import {
   ImagePickerResponse,
   launchCamera,
 } from 'react-native-image-picker';
-import { uploadImagesToS3 } from '../../api/aws';
+import {uploadImagesToS3} from '../../api/aws';
+import {getAllInfracciones, nuevaInfraccion} from '../../api/infracciones';
+import {getAllNomencladores} from '../../api/nomencladores';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const CrearMultaScreen = () => {
+const CrearMultaScreen = ({navigation}) => {
   const [dominio, setDominio] = useState('');
   const [nombrePropietario, setNombrePropietario] = useState('');
   const [nombreConductor, setNombreConductor] = useState('');
@@ -18,11 +21,13 @@ const CrearMultaScreen = () => {
   const [colorVehiculo, setColorVehiculo] = useState('');
   const [nroLicenciaConducir, setNroLicenciaConducir] = useState('');
   const [referenciaUbicacion, setReferenciaUbicacion] = useState('');
+  const [listaInfracciones, setListaInfracciones] = useState([]);
   const [infracciones, setInfracciones] = useState([]);
   const [nroInfraccion, setNroInfraccion] = useState('');
   const [dateTime, setDateTime] = useState(new Date());
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedImagesToUpload, setSelectedImagesToUpload] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [visible, setVisible] = useState(false);
 
@@ -58,7 +63,10 @@ const CrearMultaScreen = () => {
         console.error('Camera error:', response.error);
       } else {
         setSelectedImages([...selectedImages, response.assets[0].uri]);
-        setSelectedImagesToUpload([...selectedImagesToUpload, response.assets[0]]);
+        setSelectedImagesToUpload([
+          ...selectedImagesToUpload,
+          response.assets[0],
+        ]);
       }
     });
   };
@@ -78,32 +86,68 @@ const CrearMultaScreen = () => {
 
   const handleSubmit = async () => {
     const imagesUrl = await uploadImages();
-    console.log({
+    setLoading(true);
+    if (dominio.length < 6 || nombrePropietario.length < 4 || nombreConductor.length < 4 || domicilioConductor.length < 4 || marcaVehiculo.length < 4 || modeloVehiculo.length < 4 || colorVehiculo.length < 4 || nroLicenciaConducir.length < 7 || referenciaUbicacion.length < 4 || infracciones.length === 0 || selectedImages.length === 0) {
+      setLoading(false);
+      alert('Por favor, revise todos los campos y seleccione al menos una infracción y una foto.');
+      return;
+    }
+    const infraccionBoddy = {
       dominio,
-      dateTime: dateTime.toISOString(),
-      nombrePropietario,
-      nombreConductor,
-      domicilioConductor,
-      marcaVehiculo,
-      modeloVehiculo,
-      colorVehiculo,
-      nroLicenciaConducir,
-      referenciaUbicacion,
-      infracciones,
-      nroInfraccion,
-      selectedImages: imagesUrl,
-    });
+      nombre_propietario: nombrePropietario,
+      nombre_conductor: nombreConductor,
+      domicilio_conductor: domicilioConductor,
+      marca_vehiculo: marcaVehiculo,
+      modelo_vehiculo: modeloVehiculo,
+      color_vehiculo: colorVehiculo,
+      numero_licencia_conductor: nroLicenciaConducir,
+      ubicacion_infraccion: referenciaUbicacion,
+      id_nomenclador: infracciones,
+      numero_infraccion: nroInfraccion,
+      foto: imagesUrl,
+      creado_por: global.loggedUser.user.id,
+    };
+    console.log('infraccionBoddy', infraccionBoddy);
+    await nuevaInfraccion(infraccionBoddy);
+    setLoading(false);
+    navigation.navigate('VistaZorro');
   };
+
+  const loadListaInfracciones = async () => {
+    const response = await getAllNomencladores();
+    setListaInfracciones(response);
+  };
+
+  useEffect(() => {
+    void loadListaInfracciones();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
       <Text style={styles.title}>Crear Multa</Text>
+
+      <TextInput
+        label="Número de Infracción"
+        value={nroInfraccion}
+        onChangeText={text => setNroInfraccion(text)}
+        style={styles.input}
+      />
 
       <TextInput
         label="Dominio"
         value={dominio}
         onChangeText={text => setDominio(text)}
         style={styles.input}
+        error={dominio.length < 6}
       />
 
       <TextInput
@@ -111,13 +155,63 @@ const CrearMultaScreen = () => {
         value={nombrePropietario}
         onChangeText={text => setNombrePropietario(text)}
         style={styles.input}
+        error={nombrePropietario.length < 4}
       />
 
       <TextInput
-        label="Número de Infracción"
-        value={nroInfraccion}
-        onChangeText={text => setNroInfraccion(text)}
+        label="Nombre Conductor"
+        value={nombreConductor}
+        onChangeText={text => setNombreConductor(text)}
         style={styles.input}
+        error={nombreConductor.length < 4}
+      />
+
+      <TextInput
+        label="Domicilio Conductor"
+        value={domicilioConductor}
+        onChangeText={text => setDomicilioConductor(text)}
+        style={styles.input}
+        error={domicilioConductor.length < 4}
+      />
+
+      <TextInput
+        label="Marca Vehículo"
+        value={marcaVehiculo}
+        onChangeText={text => setMarcaVehiculo(text)}
+        style={styles.input}
+        error={marcaVehiculo.length < 4}
+      />
+
+      <TextInput
+        label="Modelo Vehículo"
+        value={modeloVehiculo}
+        onChangeText={text => setModeloVehiculo(text)}
+        style={styles.input}
+        error={modeloVehiculo.length < 4}
+      />
+
+      <TextInput
+        label="Color Vehículo"
+        value={colorVehiculo}
+        onChangeText={text => setColorVehiculo(text)}
+        style={styles.input}
+        error={colorVehiculo.length < 4}
+      />
+
+      <TextInput
+        label="Número de Licencia de Conducir"
+        value={nroLicenciaConducir}
+        onChangeText={text => setNroLicenciaConducir(text)}
+        style={styles.input}
+        error={nroLicenciaConducir.length < 7}
+      />
+
+      <TextInput
+        label="Referencia de Ubicación"
+        value={referenciaUbicacion}
+        onChangeText={text => setReferenciaUbicacion(text)}
+        style={styles.input}
+        error={referenciaUbicacion.length < 4}
       />
 
       <Menu
@@ -129,18 +223,14 @@ const CrearMultaScreen = () => {
             ↓ Seleccionar Infracciones
           </Button>
         }>
-        {/** Replace with your actual list of infracciones */}
-        <Menu.Item
-          onPress={() => handleInfraccionSelect('infraccion1')}
-          title="Infraccion 1"
-          checked={infracciones.includes('infraccion1')}
-        />
-        <Menu.Item
-          onPress={() => handleInfraccionSelect('infraccion2')}
-          title="Infraccion 2"
-          checked={infracciones.includes('infraccion2')}
-        />
-        {/* Add more Menu.Item components for other infracciones */}
+        {listaInfracciones.map(infraccion => (
+          <Menu.Item
+            key={infraccion.id}
+            onPress={() => handleInfraccionSelect(infraccion.id)}
+            title={infraccion.nombre}
+            checked={infracciones.includes(infraccion.id)}
+          />
+        ))}
       </Menu>
 
       {infracciones.length > 0 && (
@@ -148,7 +238,13 @@ const CrearMultaScreen = () => {
           <Text>Infracciones Seleccionadas:</Text>
           {infracciones.map(infraccionId => (
             <View key={infraccionId} style={styles.infraccionItem}>
-              <Text>{infraccionId}</Text>
+              <Text>
+                {
+                  listaInfracciones.find(
+                    infraccion => infraccion.id === infraccionId,
+                  ).nombre
+                }
+              </Text>
               <Button onPress={() => handleRemoveInfraccion(infraccionId)}>
                 Quitar
               </Button>

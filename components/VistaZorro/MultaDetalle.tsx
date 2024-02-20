@@ -1,9 +1,14 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Image } from 'react-native';
 
 const DetalleMultaScreen = ({ route }) => {
   // Assuming the route params contain the details of the selected violation
   const { multa } = route.params;
+
+  const formatISODate = date => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(date).toLocaleDateString('es-ES', options);
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -11,29 +16,66 @@ const DetalleMultaScreen = ({ route }) => {
 
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Fecha:</Text>
-        <Text>{multa.date}</Text>
+        <Text>{formatISODate(multa.createdAt)}</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Descripción:</Text>
-        <Text>{multa.description}</Text>
+        <Text style={styles.label}>Dominio:</Text>
+        <Text>{multa.dominio}</Text>
       </View>
 
-      {/* Add more details as needed based on your data structure */}
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Nombre propietario:</Text>
+        <Text>{multa.nombre_propietario}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Nombre conductor:</Text>
+        <Text>{multa.nombre_conductor}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Domicilio conductor:</Text>
+        <Text>{multa.domicilio_conductor}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Marca vehiculo:</Text>
+        <Text>{multa.marca_vehiculo}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Modelo vehiculo:</Text>
+        <Text>{multa.modelo_vehiculo}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Nro licencia:</Text>
+        <Text>{multa.numero_licencia_conductor}</Text>
+      </View>
 
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Ubicación:</Text>
-        <Text>{multa.location}</Text>
+        <Text>{multa.ubicacion_infraccion}</Text>
       </View>
 
-      {/* Add other details as needed */}
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Estado:</Text>
+        <Text>{multa.estado}</Text>
+      </View>
 
-      <Text style={styles.label}>Comentarios Adicionales:</Text>
-      <Text>{multa.comments}</Text>
+      <View style={styles.detailsContainerPhoto}>
+        <Text style={styles.label}>Fotos:</Text>
+        {multa.foto.map((foto, index) => (
+          <Image
+            key={index}
+            source={{ uri: foto }}
+            style={{ width: 200, height: 200, marginBottom: 8 }}
+          />
+        ))}
+      </View>
 
-      {/* You can include additional details based on your data structure */}
 
-      {/* Add a "Go Back" button or navigation options based on your navigation setup */}
     </ScrollView>
   );
 };
@@ -51,6 +93,9 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     marginBottom: 16,
+  },
+  detailsContainerPhoto: {
+    marginBottom: 50,
   },
   label: {
     fontWeight: 'bold',

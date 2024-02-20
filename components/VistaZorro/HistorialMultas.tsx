@@ -1,53 +1,51 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
-import { Button, Card, Title, Paragraph } from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text} from 'react-native';
+import {TouchableOpacity, FlatList} from 'react-native-gesture-handler';
+import {Button, Card, Title, Paragraph} from 'react-native-paper';
+import { listaInfracciones } from '../../api/infracciones';
 
 const HistorialMultasScreen = () => {
   const navigation = useNavigation();
 
-  const [historialMultas, setHistorialMultas] = useState([
-    // Your historical violations data here
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    { id: '1', date: '2022-02-01', description: 'Exceso de velocidad' },
-    { id: '2', date: '2022-01-15', description: 'Estacionamiento prohibido' },
-    // Add more historical violations as needed
-  ]);
+  const [historialMultas, setHistorialMultas] = useState([]);
 
-  const handleMultaPress = (multa) => {
+  const handleMultaPress = multa => {
     // Navigate to DetalleMultaScreen with the selected multa details
-    navigation.navigate('DetalleMultaScreen', { multa });
+    navigation.navigate('DetalleMultaScreen', {multa});
   };
 
-  const renderItem = ({ item }) => (
+  const formatISODate = date => {
+    const options = {year: 'numeric', month: 'long', day: 'numeric'};
+    return new Date(date).toLocaleDateString('es-ES', options);
+  }
+
+  const renderItem = ({item}) => (
     <TouchableOpacity onPress={() => handleMultaPress(item)}>
       <Card style={styles.card}>
         <Card.Content>
-          <Title>{item.date}</Title>
-          <Paragraph>{item.description}</Paragraph>
+          <Title>{formatISODate(item.createdAt)}</Title>
+          <Paragraph>{item.dominio} - {item.nombre_conductor} - {item.estado}</Paragraph>
         </Card.Content>
       </Card>
     </TouchableOpacity>
   );
+
+  const fetchHistorialMultas = async () => {
+    const multas = await listaInfracciones(global.loggedUser.user.id);
+    setHistorialMultas(multas);
+  };
+
+  useEffect(() => {
+    fetchHistorialMultas();
+  }, []);
 
   return (
     <View style={styles.container}>
       {historialMultas.length > 0 ? (
         <FlatList
           data={historialMultas}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => item.id.toString()}
           renderItem={renderItem}
         />
       ) : (
