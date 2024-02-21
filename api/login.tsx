@@ -3,7 +3,7 @@ import API_URL from './baseUrl';
 
 export const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}users/login`, { email: username, password });
+    const response = await axios.post(`${API_URL}users/login`, { username, password });
     const loggedUser = response.data;
 
     global.loggedUser = loggedUser;
