@@ -23,6 +23,8 @@ const VistaAdmin = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>{global.loggedUser.user.name}</Text>
+
       <Button mode="contained" onPress={handleABMUsuarios} style={styles.button}>
         Usuarios
       </Button>

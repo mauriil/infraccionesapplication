@@ -1,19 +1,21 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, ToastAndroid} from 'react-native';
 import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
-import {getAllUsers} from '../../api/usuarios';
+import {getAllUsers, newUserRequest} from '../../api/usuarios';
 import {Picker} from '@react-native-picker/picker';
 
 const UsersManagement: React.FC = () => {
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
+  const randomId = Math.floor(Math.random() * 1000);
   const [newUser, setNewUser] = useState({
     name: '',
-    email: '',
+    email: `user@${randomId}.com`,
+    username: '',
     password: '',
     tipo: '',
     nombre_hotel: '',
@@ -42,8 +44,13 @@ const UsersManagement: React.FC = () => {
 
   const addUser = async () => {
     try {
-      await axios.post('/api/users', newUser); // Replace with your backend API endpoint
-      setNewUser({name: '', email: '', password: '', tipo: ''});
+      await newUserRequest(newUser);
+      ToastAndroid.showWithGravity(
+        'Usuario creado',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setNewUser({name: '', username: '', password: ''});
       getUsers();
     } catch (error) {
       console.error('Error adding user:', error);
@@ -84,9 +91,9 @@ const UsersManagement: React.FC = () => {
             style={styles.input}
           />
           <TextInput
-            label="Email"
-            value={newUser.email}
-            onChangeText={value => setNewUser({...newUser, email: value})}
+            label="Usuario"
+            value={newUser.username}
+            onChangeText={value => setNewUser({...newUser, username: value})}
             style={styles.input}
           />
           <TextInput
