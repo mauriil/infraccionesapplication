@@ -9,3 +9,12 @@ export const getAllTransportes = async () => {
   });
   return response.data;
 };
+
+export const newTransporteRequest = async (newTransporte) => {
+  const response = await axios.post(`${API_URL}transporte`, newTransporte, {
+    headers: {
+      Authorization: `Bearer ${global.loggedUser.token}`,
+    },
+  });
+  return response.data;
+};

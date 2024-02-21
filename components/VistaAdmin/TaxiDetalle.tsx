@@ -3,7 +3,7 @@ import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import { Button } from 'react-native-paper';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
-import {request, PERMISSIONS} from 'react-native-permissions';
+import { request, PERMISSIONS } from 'react-native-permissions';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const TaxiDetalle = ({ route }) => {
@@ -15,7 +15,7 @@ const TaxiDetalle = ({ route }) => {
   const requestStoragePermission = async () => {
     try {
       const granted = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-  
+
       if (granted === 'granted') {
         console.log('Storage permission granted');
       } else {
@@ -25,45 +25,104 @@ const TaxiDetalle = ({ route }) => {
       console.error('Error requesting storage permission:', error);
     }
   };
-  
+
   useEffect(() => {
     requestStoragePermission();
   }, []);
 
   const generatePDFContent = () => {
     const htmlContent = `
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              font-size: 14px;
-            }
-            .label {
-              font-weight: bold;
-              margin-bottom: 4px;
-            }
-          </style>
-        </head>
-        <body>
-          <div>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+          margin: 20px;
+          color: #333;
+        }
+    
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ccc;
+          background-color: #f9f9f9;
+        }
+    
+        .header {
+          text-align: center;
+          margin-bottom: 10px;
+        }
+    
+        .header img {
+            max-width: 500px;
+          height: auto;
+        }
+    
+        .label {
+          font-weight: bold;
+          margin-top: 2px;
+          color: #555;
+        }
+    
+        .photoLabel {
+        text-align: center;
+          font-weight: bold;
+          margin-bottom: 4px;
+          color: #555;
+        }
+    
+        .data {
+          margin-bottom: 20px;
+          float: left;
+          width: 48%; /* Ajusta el ancho según tus necesidades */
+        }
+    
+        .data p {
+          margin: 5px 0;
+        }
+    
+        .photo-container {
+          margin-top: 20px;
+          float: right;
+          width: 48%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+    
+        }
+    
+        .photo {
+          margin-bottom: 20px;
+        }
+    
+        .photo img {
+          width: 100%;
+          height: 250px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="https://scontent.firj1-1.fna.fbcdn.net/v/t39.30808-6/411672554_754087126761682_389622176565572570_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=783fdb&_nc_ohc=Auino-jaM8MAX9NqfxY&_nc_ht=scontent.firj1-1.fna&oh=00_AfALGcF66Ngnn3AycnsmvrowF_BwOq77rgVnt7jXNO9VSg&oe=65DA3793" alt="Logo">
+        </div>
+
+        <div class="data">
             <p class="label">Nro Legajo:</p>
             <p>${taxi.numero_legajo}</p>
 
             <p class="label">Dominio del Vehículo:</p>
             <p>${taxi.dominio_vehiculo}</p>
 
-            <p class="label">Número de Motor:</p>
-            <p>${taxi.numero_motor}</p>
-
-            <p class="label">Número de Chasis:</p>
-            <p>${taxi.numero_chasis}</p>
-
-            <p class="label">Marca del Vehículo:</p>
-            <p>${taxi.marca_vehiculo}</p>
-
-            <p class="label">Modelo del Vehículo:</p>
-            <p>${taxi.modelo_vehiculo}</p>
+            <p class="label">Marca y modelo del Vehículo:</p>
+            <p>${taxi.marca_vehiculo} ${taxi.modelo_vehiculo}</p>
 
             <p class="label">Nombre del Titular:</p>
             <p>${taxi.nombre_titular}</p>
@@ -89,11 +148,23 @@ const TaxiDetalle = ({ route }) => {
             <p class="label">Taximetro:</p>
             <p>${taxi.taximetro}</p>
 
-            <p class="label">Observaciones:</p>
-            <p>${taxi.observaciones}</p>
+        </div>
+
+        <div class="photo-container">
+          <div class="photo">
+            <p class="photoLabel">Foto del Conductor:</p>
+              ${taxi.foto_conductor ? `<img src="${taxi.foto_conductor}" alt="Foto del Conductor">` : 'No disponible'}
           </div>
-        </body>
-      </html>
+          <div class="photo">
+            <p class="photoLabel">Foto del vehículo:</p>
+              ${taxi.foto_vehiculo ? `<img src="${taxi.foto_vehiculo}" alt="Foto del Vehículo">` : 'No disponible'}
+          </div>
+        </div>
+
+        <div style="clear: both;"></div> <!-- Clear float para evitar problemas de altura desigual -->
+      </div>
+    </body>
+    </html>
     `;
 
     return htmlContent;
@@ -109,10 +180,10 @@ const TaxiDetalle = ({ route }) => {
         fileName: 'Poliza_Taxi.pdf',
         directory: 'Documents',
       };
-  
+
       const file = await RNHTMLtoPDF.convert(options);
       console.log('File generated:', file.filePath);
-  
+
       // Share the generated PDF via email
       const shareOptions = {
         title: 'Share PDF',
@@ -127,7 +198,7 @@ const TaxiDetalle = ({ route }) => {
       console.error('Error generating or sharing PDF:', error);
     }
   };
-  
+
 
 
   return (
