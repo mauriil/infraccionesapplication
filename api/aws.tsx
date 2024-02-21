@@ -13,8 +13,11 @@ const imageToBinary = async (uri: string) => {
   }
 };
 
-const getPresignedUrl = async ()  => {
-  const randomId = Math.random().toString(36).substring(7);
+const getPresignedUrl = async (folder = '')  => {
+  let randomId = Math.random().toString(36).substring(7);
+  if (folder !== '') {
+    randomId = `${folder}-${randomId}`;
+  }
   const response = await axios.get(`${API_URL}aws/presigned-url/${randomId}`, {
     headers: {
       Authorization: `Bearer ${global.loggedUser.token}`,
@@ -26,7 +29,7 @@ const getPresignedUrl = async ()  => {
 export const uploadImagesToS3 = async imagesArray => {
   try {
     const presignedUrls = await Promise.all(
-      imagesArray.map(async () => await getPresignedUrl()),
+      imagesArray.map(async () => await getPresignedUrl('infractions')),
     );
 
     const uploadPromises = imagesArray.map(async (image, index) => {
@@ -43,5 +46,19 @@ export const uploadImagesToS3 = async imagesArray => {
     return uploadedImages;
   } catch (error) {
     console.error('Error logging in:', error);
+  }
+};
+
+export const singleUploadToS3 = async (image, folder = '') => {
+  try {
+    const presignedUrl = await getPresignedUrl(folder);
+    await axios.put(presignedUrl, await imageToBinary(image.uri), {
+      headers: {
+        'Content-Type': image.type,
+      },
+    });
+    return presignedUrl.split('?')[0];
+  } catch (error) {
+    console.error('Error uploading image:', error);
   }
 };

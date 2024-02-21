@@ -4,11 +4,13 @@ import { Button } from 'react-native-paper';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const TaxiDetalle = ({ route }) => {
   // Assuming the route params contain the details of the selected violation
   const { taxiRemis } = route.params;
   const [taxi, setTaxi] = useState(taxiRemis);
+  const [loading, setLoading] = useState(false);
 
   const requestStoragePermission = async () => {
     try {
@@ -99,6 +101,7 @@ const TaxiDetalle = ({ route }) => {
 
 
   const imprimirPoliza = async () => {
+    setLoading(true);
     try {
       // Generate PDF
       const options = {
@@ -118,7 +121,7 @@ const TaxiDetalle = ({ route }) => {
         type: 'application/pdf',
         failOnCancel: false,
       };
-  
+      setLoading(false);
       await Share.open(shareOptions);
     } catch (error) {
       console.error('Error generating or sharing PDF:', error);
@@ -129,6 +132,15 @@ const TaxiDetalle = ({ route }) => {
 
   return (
     <ScrollView style={styles.container}>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Nro Legajo:</Text>
         <Text>{taxiRemis.numero_legajo}</Text>

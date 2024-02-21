@@ -89,12 +89,14 @@ const UsersManagement: React.FC = () => {
             value={newUser.name}
             onChangeText={value => setNewUser({...newUser, name: value})}
             style={styles.input}
+            error={newUser.name.length < 4}
           />
           <TextInput
             label="Usuario"
             value={newUser.username}
             onChangeText={value => setNewUser({...newUser, username: value})}
             style={styles.input}
+            error={newUser.username.length < 4}
           />
           <TextInput
             label="Contraseña"
@@ -102,6 +104,7 @@ const UsersManagement: React.FC = () => {
             value={newUser.password}
             onChangeText={value => setNewUser({...newUser, password: value})}
             style={styles.input}
+            error={newUser.password.length < 4}
           />
           <Text style={styles.label}>Tipo</Text>
           <Picker
