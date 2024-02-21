@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { login } from '../../api/login';
+import {useAsyncStorage} from '@react-native-community/async-storage';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -17,26 +18,44 @@ const LoginScreen = () => {
       setUsername('');
       setPassword('');
 
-      switch (loginResponse.user.tipo) {
-        case 'Inspector':
-          navigation.navigate('VistaZorro');
-          break;
-        case 'Corralon':
-          navigation.navigate('VistaCorralon');
-          break;
-        case 'Juez':
-          navigation.navigate('VistaJuez');
-          break;
-        case 'Administrador':
-          navigation.navigate('VistaAdmin');
-          break;
-        default:
-          console.log('Invalid user type');
-      }
+      checkView(loginResponse.user.tipo);
     } else {
       console.log('Invalid credentials');
     }
   };
+
+  const checkView = async (tipo) => {
+    switch (tipo) {
+      case 'Inspector':
+        navigation.navigate('VistaZorro');
+        break;
+      case 'Corralon':
+        navigation.navigate('VistaCorralon');
+        break;
+      case 'Juez':
+        navigation.navigate('VistaJuez');
+        break;
+      case 'Administrador':
+        navigation.navigate('VistaAdmin');
+        break;
+      default:
+        console.log('Invalid user type');
+    }
+  };
+
+  const checkLogin = async () => {
+    const {getItem} = useAsyncStorage('loggedUser');
+    const loggedUser = await getItem();
+
+    if (loggedUser) {
+      global.loggedUser = JSON.parse(loggedUser);
+      checkView(global.loggedUser.user.tipo);
+    }
+  };
+
+  useEffect(() => {
+    checkLogin();
+  }, []);
 
   return (
     <View style={styles.container}>

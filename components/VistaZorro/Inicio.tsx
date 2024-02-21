@@ -22,7 +22,7 @@ const VistaZorro = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.title}>Vista Zorro</Text> */}
+      <Text style={styles.title}>{global.loggedUser.user.name}</Text>
 
       <Button mode="contained" onPress={handleCrearMulta} style={styles.button}>
         Crear nueva multa
