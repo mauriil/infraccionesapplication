@@ -52,9 +52,9 @@ const HistorialMultasScreen = () => {
         <Text>No hay multas en el historial.</Text>
       )}
 
-      <Button mode="contained" onPress={() => console.log('View more')}>
+      {/* <Button mode="contained" onPress={() => console.log('View more')}>
         Cargar Más
-      </Button>
+      </Button> */}
     </View>
   );
 };
