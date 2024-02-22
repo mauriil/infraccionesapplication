@@ -60,8 +60,8 @@ const TaxiDetalle = ({ route }) => {
         }
     
         .header img {
-            max-width: 500px;
-          height: auto;
+            max-width: 450px;
+            height: auto;
         }
     
         .label {
@@ -85,6 +85,10 @@ const TaxiDetalle = ({ route }) => {
     
         .data p {
           margin: 5px 0;
+        }
+
+        .data h2 {
+          text-align: center;
         }
     
         .photo-container {
@@ -115,6 +119,8 @@ const TaxiDetalle = ({ route }) => {
         </div>
 
         <div class="data">
+            <h2>${taxi.tipo}</h2>
+
             <p class="label">Nro Legajo:</p>
             <p>${taxi.numero_legajo}</p>
 
@@ -145,15 +151,12 @@ const TaxiDetalle = ({ route }) => {
             <p class="label">Desinfeccion vehicular:</p>
             <p>${taxi.desinfeccion_vehicular}</p>
 
-            <p class="label">Taximetro:</p>
-            <p>${taxi.taximetro}</p>
-
         </div>
 
         <div class="photo-container">
           <div class="photo">
-            <p class="photoLabel">Foto del Conductor:</p>
-              ${taxi.foto_conductor ? `<img src="${taxi.foto_conductor}" alt="Foto del Conductor">` : 'No disponible'}
+            <p class="photoLabel">Foto del Titular:</p>
+              ${taxi.foto_titular ? `<img src="${taxi.foto_titular}" alt="Foto del Titular">` : 'No disponible'}
           </div>
           <div class="photo">
             <p class="photoLabel">Foto del vehículo:</p>
@@ -177,7 +180,7 @@ const TaxiDetalle = ({ route }) => {
       // Generate PDF
       const options = {
         html: generatePDFContent(),
-        fileName: 'Poliza_Taxi.pdf',
+        fileName: `Poliza_${taxiRemis.tipo}_${taxiRemis.dominio_vehiculo}`,
         directory: 'Documents',
       };
 

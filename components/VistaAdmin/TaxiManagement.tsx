@@ -25,6 +25,7 @@ const TaxiRemisManagement: React.FC = () => {
   const navigation = useNavigation();
   const [taxiRemises, setTaxiRemises] = useState([]);
   const [newTaxiRemis, setNewTaxiRemis] = useState({
+    tipo: 'Taxi',
     numero_legajo: '',
     dominio_vehiculo: '',
     numero_motor: '',
@@ -41,7 +42,7 @@ const TaxiRemisManagement: React.FC = () => {
     taximetro: 'En condiciones',
     observaciones: '',
     foto_vehiculo: '',
-    foto_conductor: '',
+    foto_titular: '',
   });
   const [fotoVehiculoToUpload, setFotoVehiculoToUpload] = useState('');
   const [fotoConductorToUpload, setFotoConductorToUpload] = useState('');
@@ -157,16 +158,16 @@ const TaxiRemisManagement: React.FC = () => {
       const url = await uploadPhoto(fotoVehiculoToUpload, 'taxiremis-vehicles');
       urlVehiclePhoto = url;
     }
-    if (newTaxiRemis.foto_conductor !== '') {
+    if (newTaxiRemis.foto_titular !== '') {
       const url = await uploadPhoto(fotoConductorToUpload, 'taxiremis-drivers');
-      setNewTaxiRemis({...newTaxiRemis, foto_conductor: url});
+      setNewTaxiRemis({...newTaxiRemis, foto_titular: url});
       urlDriverPhoto = url;
     }
     try {
       await createNewTaxiRemis({
         ...newTaxiRemis,
         foto_vehiculo: urlVehiclePhoto,
-        foto_conductor: urlDriverPhoto,
+        foto_titular: urlDriverPhoto,
       });
       ToastAndroid.showWithGravity(
         'Taxi-Remis creado',
@@ -174,6 +175,7 @@ const TaxiRemisManagement: React.FC = () => {
         ToastAndroid.CENTER,
       );
       setNewTaxiRemis({
+        tipo: 'Taxi',
         numero_legajo: '',
         dominio_vehiculo: '',
         numero_motor: '',
@@ -190,7 +192,7 @@ const TaxiRemisManagement: React.FC = () => {
         taximetro: 'En condiciones',
         observaciones: '',
         foto_vehiculo: '',
-        foto_conductor: '',
+        foto_titular: '',
       });
       getTaxiRemises();
       setShowAddTaxiRemisFields(false); // Close the taxiRemis creation fields after adding
@@ -254,14 +256,14 @@ const TaxiRemisManagement: React.FC = () => {
       } else {
         setNewTaxiRemis({
           ...newTaxiRemis,
-          foto_conductor: response.assets[0].uri,
+          foto_titular: response.assets[0].uri,
         });
         setFotoConductorToUpload(response.assets[0]);
       }
     });
   };
   const handleRemoveDriverImage = () => {
-    setNewTaxiRemis({...newTaxiRemis, foto_conductor: ''});
+    setNewTaxiRemis({...newTaxiRemis, foto_titular: ''});
     setFotoConductorToUpload('');
   };
 
@@ -290,6 +292,19 @@ const TaxiRemisManagement: React.FC = () => {
       {/* Add TaxiRemis Form (conditionally rendered based on showAddTaxiRemisFields state) */}
       {showAddTaxiRemisFields && (
         <ScrollView>
+          <Text style={styles.label}>Tipo</Text>
+          <Picker
+            selectedValue={newTaxiRemis.tipo}
+            onValueChange={itemValue =>
+              setNewTaxiRemis({
+                ...newTaxiRemis,
+                tipo: itemValue,
+              })
+            }
+            style={styles.picker}>
+            <Picker.Item label="Taxi" value="Taxi" />
+            <Picker.Item label="Remis" value="Remis" />
+          </Picker>
           <TextInput
             label="Número de Legajo"
             value={newTaxiRemis.numero_legajo}
@@ -401,12 +416,12 @@ const TaxiRemisManagement: React.FC = () => {
             mode="contained"
             onPress={handleDriverImage}
             style={styles.button}>
-            Foto del Conductor (Opcional)
+            Foto del Titular (Opcional)
           </Button>
-          {newTaxiRemis.foto_conductor !== '' && (
+          {newTaxiRemis.foto_titular !== '' && (
             <>
               <Image
-                source={{uri: newTaxiRemis.foto_conductor}}
+                source={{uri: newTaxiRemis.foto_titular}}
                 style={styles.selectedImage}
               />
               <Button
