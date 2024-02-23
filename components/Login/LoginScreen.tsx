@@ -1,17 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { login } from '../../api/login';
-import { useAsyncStorage } from '@react-native-community/async-storage';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Image, Linking, Alert} from 'react-native';
+import {Text, TextInput, Button} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {login} from '../../api/login';
+import {useAsyncStorage} from '@react-native-community/async-storage';
+import {checkVersion} from '../../api/versions';
+import {WebView} from 'react-native-webview';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
   const [checkingLogin, setCheckingLogin] = useState(true);
+  const [newVersion, setNewVersion] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
     const loginResponse = await login(username, password);
 
     if (loginResponse) {
@@ -20,7 +26,8 @@ const LoginScreen = () => {
 
       checkView(loginResponse.user.tipo);
     } else {
-      console.log('Invalid credentials');
+      Alert.alert('Error', 'Usuario o contraseña incorrectos');
+      setLoading(false);
     }
   };
 
@@ -44,16 +51,35 @@ const LoginScreen = () => {
   };
 
   const checkLogin = async () => {
-    const { getItem } = useAsyncStorage('loggedUser');
+    const {getItem} = useAsyncStorage('loggedUser');
     const loggedUser = await getItem();
+    console.log("🚀 ~ checkLogin ~ loggedUser:", loggedUser)
 
     setTimeout(() => {
       if (loggedUser) {
         global.loggedUser = JSON.parse(loggedUser);
-        checkView(global.loggedUser.user.tipo);
+        checkNewVersion();
+        return;
       }
       setCheckingLogin(false);
     }, 2000);
+  };
+
+  const checkNewVersion = async () => {
+    const newVersion = await checkVersion();
+
+    if (newVersion) {
+      if (newVersion.number > global.loggedUser.version.number) {
+        console.log('New version available');
+        setNewVersion(newVersion);
+        const {removeItem} = useAsyncStorage('loggedUser');
+        await removeItem();
+        checkLogin();
+        Linking.openURL(newVersion.uri).catch(err => console.error('An error occurred', err));
+      } else {
+        checkView(global.loggedUser.user.tipo);
+      }
+    }
   };
 
   useEffect(() => {
@@ -76,8 +102,21 @@ const LoginScreen = () => {
     );
   }
 
+  {
+    newVersion && <WebView source={{uri: newVersion.uri}} style={{flex: 1}} />;
+  }
+
   return (
     <View style={styles.container}>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
       <Text style={styles.title}>Login</Text>
 
       <TextInput
