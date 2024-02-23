@@ -110,6 +110,11 @@ const TaxiDetalle = ({ route }) => {
           width: 100%;
           height: 250px;
         }
+
+        .tipo_transporte {
+          text-align: center;
+          margin-bottom: 10px;
+        }
       </style>
     </head>
     <body>
@@ -118,9 +123,11 @@ const TaxiDetalle = ({ route }) => {
           <img src="https://scontent.firj1-1.fna.fbcdn.net/v/t39.30808-6/411672554_754087126761682_389622176565572570_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=783fdb&_nc_ohc=Auino-jaM8MAX9NqfxY&_nc_ht=scontent.firj1-1.fna&oh=00_AfALGcF66Ngnn3AycnsmvrowF_BwOq77rgVnt7jXNO9VSg&oe=65DA3793" alt="Logo">
         </div>
 
-        <div class="data">
-            <h2>${taxi.tipo}</h2>
+        <div class="tipo_transporte">
+          <h2>${taxi.tipo}</h2>
+        </div>
 
+        <div class="data">
             <p class="label">Nro Legajo:</p>
             <p>${taxi.numero_legajo}</p>
 
@@ -180,7 +187,7 @@ const TaxiDetalle = ({ route }) => {
       // Generate PDF
       const options = {
         html: generatePDFContent(),
-        fileName: `Poliza_${taxiRemis.tipo}_${taxiRemis.dominio_vehiculo}`,
+        fileName: `Credencial_${taxiRemis.tipo}_${taxiRemis.dominio_vehiculo}`,
         directory: 'Documents',
       };
 
@@ -266,7 +273,7 @@ const TaxiDetalle = ({ route }) => {
       <Button mode="contained" onPress={() => imprimirPoliza()} style={{
         marginBottom: 100,
       }}>
-        Imprimir poliza
+        Imprimir Credencial
       </Button>
     </ScrollView>
   );

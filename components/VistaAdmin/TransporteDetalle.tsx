@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, ScrollView, Text} from 'react-native';
+import {Button} from 'react-native-paper';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
-import { request, PERMISSIONS } from 'react-native-permissions';
+import {request, PERMISSIONS} from 'react-native-permissions';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-
-const TransporteDetalle = ({ route }) => {
+const TransporteDetalle = ({route}) => {
   // Assuming the route params contain the details of the selected violation
-  const { transporte } = route.params;
+  const {transporte} = route.params;
 
   const [loading, setLoading] = useState(false);
 
@@ -33,21 +32,97 @@ const TransporteDetalle = ({ route }) => {
 
   const generatePDFContent = () => {
     const htmlContent = `
-      <html>
-        <head>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              font-size: 14px;
-            }
-            .label {
-              font-weight: bold;
-              margin-bottom: 4px;
-            }
-          </style>
-        </head>
-        <body>
-          <div>
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+          margin: 20px;
+          color: #333;
+        }
+    
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 20px;
+          border: 1px solid #ccc;
+          background-color: #f9f9f9;
+        }
+    
+        .header {
+          text-align: center;
+          margin-bottom: 10px;
+        }
+    
+        .header img {
+            max-width: 450px;
+            height: auto;
+        }
+    
+        .label {
+          font-weight: bold;
+          margin-top: 2px;
+          color: #555;
+        }
+    
+        .photoLabel {
+          text-align: center;
+          font-weight: bold;
+          margin-bottom: 4px;
+          color: #555;
+        }
+    
+        .data {
+          margin-bottom: 20px;
+          float: left;
+          width: 48%; /* Ajusta el ancho según tus necesidades */
+        }
+    
+        .data p {
+          margin: 5px 0;
+        }
+
+        .data h2 {
+          text-align: center;
+        }
+    
+        .photo-container {
+          padding-top: 80px;
+          margin-bottom: 20px;
+          float: right;    
+        }
+    
+        .photo {
+          margin-bottom: 20px;
+        }
+    
+        .photo img {
+          width: 100%;
+          height: 250px;
+        }
+
+        .tipo_transporte {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="https://scontent.firj1-1.fna.fbcdn.net/v/t39.30808-6/411672554_754087126761682_389622176565572570_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=783fdb&_nc_ohc=Auino-jaM8MAX9NqfxY&_nc_ht=scontent.firj1-1.fna&oh=00_AfALGcF66Ngnn3AycnsmvrowF_BwOq77rgVnt7jXNO9VSg&oe=65DA3793" alt="Logo">
+        </div>
+
+        <div class="tipo_transporte">
+        <h2>Tipo transporte:  ${transporte.tipo_transporte}</h2>
+        </div>
+
+        <div class="data">
             <p class="label">Nro Legajo:</p>
             <p>${transporte.numero_legajo}</p>
 
@@ -75,7 +150,11 @@ const TransporteDetalle = ({ route }) => {
             <p class="label">Nombre del Conductor:</p>
             <p>${transporte.nombre_conductor}</p>
 
-            <p class="label">Poliza:</p>
+            
+        </div>
+
+        <div class="photo-container">
+        <p class="label">Poliza:</p>
             <p>${transporte.poliza_seguro}</p>
 
             <p class="label">VTV:</p>
@@ -84,16 +163,21 @@ const TransporteDetalle = ({ route }) => {
             <p class="label">Tipo de transporte:</p>
             <p>${transporte.tipo_transporte}</p>
 
-            <p class="label">Observaciones adicionales:</p>
-            <p>${transporte.observaciones}</p>
-          </div>
-        </body>
-      </html>
+            ${
+              transporte.observaciones !== ''
+                ? `<p class="label">Observaciones adicionales:</p>
+              <p>${transporte.observaciones}</p>`
+                : ''
+            }
+        </div>
+
+        <div style="clear: both;"></div> <!-- Clear float para evitar problemas de altura desigual -->
+      </div>
+    </body>
     `;
 
     return htmlContent;
   };
-
 
   const imprimirPoliza = async () => {
     setLoading(true);
@@ -101,7 +185,7 @@ const TransporteDetalle = ({ route }) => {
       // Generate PDF
       const options = {
         html: generatePDFContent(),
-        fileName: 'Poliza_Taxi.pdf',
+        fileName: `Credencial_${transporte.tipo_transporte}_${transporte.numero_legajo}`,
         directory: 'Documents',
       };
 
@@ -122,8 +206,6 @@ const TransporteDetalle = ({ route }) => {
       console.error('Error generating or sharing PDF:', error);
     }
   };
-
-
 
   return (
     <ScrollView style={styles.container}>
@@ -202,10 +284,13 @@ const TransporteDetalle = ({ route }) => {
         <Text>{transporte.observaciones}</Text>
       </View>
 
-      <Button mode="contained" onPress={() => imprimirPoliza()} style={{
-        marginBottom: 100,
-      }}>
-        Imprimir poliza
+      <Button
+        mode="contained"
+        onPress={() => imprimirPoliza()}
+        style={{
+          marginBottom: 100,
+        }}>
+        Imprimir Credencial
       </Button>
     </ScrollView>
   );
