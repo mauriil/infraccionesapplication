@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image} from 'react-native';
 import {Button, Text} from 'react-native-paper';
 
 const VistaAdmin = ({navigation}) => {
@@ -8,10 +8,10 @@ const VistaAdmin = ({navigation}) => {
   };
   const handleABMTransportes = () => {
     navigation.navigate('ABMTransportes');
-  }
+  };
   const handleABMTaxis = () => {
     navigation.navigate('ABMTaxis');
-  }
+  };
 
   const handleCerrarSesion = () => {
     navigation.navigate('LoginScreen');
@@ -19,17 +19,32 @@ const VistaAdmin = ({navigation}) => {
 
   const handleABMTurismo = () => {
     navigation.navigate('ABMTurismo');
-  }
+  };
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('../../assets/splash.png')}
+        style={{
+          width: '100%',
+          alignSelf: 'center',
+          borderRadius: 60,
+        }}
+      />
+
       <Text style={styles.title}>{global.loggedUser.user.name}</Text>
 
-      <Button mode="contained" onPress={handleABMUsuarios} style={styles.button}>
+      <Button
+        mode="contained"
+        onPress={handleABMUsuarios}
+        style={styles.button}>
         Usuarios
       </Button>
 
-      <Button mode="contained" onPress={handleABMTransportes} style={styles.button}>
+      <Button
+        mode="contained"
+        onPress={handleABMTransportes}
+        style={styles.button}>
         Transportes
       </Button>
 
@@ -57,7 +72,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     paddingBottom: 0,
-    backgroundColor: '#00AF5A',
+    backgroundColor: '#FFFAF9',
   },
   title: {
     fontSize: 24,

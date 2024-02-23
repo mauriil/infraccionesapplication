@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingBottom: 0,
-    backgroundColor: '#00AF5A',
+    backgroundColor: '#FFFAF9',
   },
   title: {
     fontSize: 24,

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Text, TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { login } from '../../api/login';
-import {useAsyncStorage} from '@react-native-community/async-storage';
+import { useAsyncStorage } from '@react-native-community/async-storage';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const [checkingLogin, setCheckingLogin] = useState(true);
 
   const handleLogin = async () => {
-
     const loginResponse = await login(username, password);
 
     if (loginResponse) {
@@ -24,7 +24,7 @@ const LoginScreen = () => {
     }
   };
 
-  const checkView = async (tipo) => {
+  const checkView = async tipo => {
     switch (tipo) {
       case 'Inspector':
         navigation.navigate('VistaZorro');
@@ -44,18 +44,37 @@ const LoginScreen = () => {
   };
 
   const checkLogin = async () => {
-    const {getItem} = useAsyncStorage('loggedUser');
+    const { getItem } = useAsyncStorage('loggedUser');
     const loggedUser = await getItem();
 
-    if (loggedUser) {
-      global.loggedUser = JSON.parse(loggedUser);
-      checkView(global.loggedUser.user.tipo);
-    }
+    setTimeout(() => {
+      if (loggedUser) {
+        global.loggedUser = JSON.parse(loggedUser);
+        checkView(global.loggedUser.user.tipo);
+      }
+      setCheckingLogin(false);
+    }, 2000);
   };
 
   useEffect(() => {
     checkLogin();
   }, []);
+
+  if (checkingLogin) {
+    return (
+      <View style={styles.container}>
+        <Image
+          source={require('../../assets/splash.png')}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignContent: 'center',
+            borderRadius: 60,
+          }}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -64,7 +83,7 @@ const LoginScreen = () => {
       <TextInput
         label="Username"
         value={username}
-        onChangeText={(text) => setUsername(text)}
+        onChangeText={text => setUsername(text)}
         style={styles.input}
       />
 
@@ -72,7 +91,7 @@ const LoginScreen = () => {
         label="Password"
         secureTextEntry
         value={password}
-        onChangeText={(text) => setPassword(text)}
+        onChangeText={text => setPassword(text)}
         style={styles.input}
       />
 
@@ -89,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     paddingBottom: 0,
-    backgroundColor: '#00AF5A',
+    backgroundColor: '#FFFAF9',
   },
   title: {
     fontSize: 24,

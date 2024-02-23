@@ -1,4 +1,9 @@
 {
   "name": "infraccionesapplication",
-  "displayName": "infraccionesapplication"
+  "displayName": "infraccionesapplication",
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#ffffff"
+  },
 }
