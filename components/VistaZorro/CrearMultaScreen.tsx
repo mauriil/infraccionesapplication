@@ -87,8 +87,8 @@ const CrearMultaScreen = ({ navigation }) => {
   };
 
   const handleSubmit = async () => {
-    const imagesUrl = await uploadImages();
     setLoading(true);
+    const imagesUrl = await uploadImages();
     if (dominio.length < 6 || nombrePropietario.length < 4 || nombreConductor.length < 4 || domicilioConductor.length < 4 || marcaVehiculo.length < 4 || modeloVehiculo.length < 4 || colorVehiculo.length < 4 || nroLicenciaConducir.length < 7 || referenciaUbicacion.length < 4 || infracciones.length === 0 || selectedImages.length === 0) {
       setLoading(false);
       Alert.alert('Atención', 'Por favor, revise todos los campos y asegúrese de seleccionar al menos una infracción y una foto.');
