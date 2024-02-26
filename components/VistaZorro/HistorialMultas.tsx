@@ -4,11 +4,13 @@ import {View, StyleSheet, Text} from 'react-native';
 import {TouchableOpacity, FlatList} from 'react-native-gesture-handler';
 import {Button, Card, Title, Paragraph} from 'react-native-paper';
 import { listaInfracciones } from '../../api/infracciones';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const HistorialMultasScreen = () => {
   const navigation = useNavigation();
 
   const [historialMultas, setHistorialMultas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleMultaPress = multa => {
     // Navigate to DetalleMultaScreen with the selected multa details
@@ -34,6 +36,7 @@ const HistorialMultasScreen = () => {
   const fetchHistorialMultas = async () => {
     const multas = await listaInfracciones(global.loggedUser.user.id);
     setHistorialMultas(multas);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -42,6 +45,7 @@ const HistorialMultasScreen = () => {
 
   return (
     <View style={styles.container}>
+      {loading && <Spinner visible={loading} textContent={'Cargando...'} />}
       {historialMultas.length > 0 ? (
         <FlatList
           data={historialMultas}
