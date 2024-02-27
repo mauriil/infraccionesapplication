@@ -1,37 +1,65 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { Button, Card, Paragraph, TextInput, Title } from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {View, Text, FlatList, StyleSheet, Alert} from 'react-native';
+import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker';
-import { getAllNomencladores } from '../../api/nomencladores';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+import {Picker} from '@react-native-picker/picker';
+import {getAllNomencladores} from '../../api/nomencladores';
+import {getCombustible, updateCombustible} from '../../api/combustible';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const UnidadFija: React.FC = () => {
   const navigation = useNavigation();
   const [UnidadFija, setUnidadFija] = useState([]);
-  const [newUnidadFija, setNewUnidadFija] = useState({
-    fecha_actualizacion: '',
-    valor: 0,
-  });
+  const [loading, setLoading] = useState(false);
 
   const getUnidadFija = async () => {
     try {
-      const response = await getAllNomencladores();
-      setUnidadFija(response);
+      setLoading(true);
+      const response = await getCombustible();
+      console.log("🚀 ~ getUnidadFija ~ response:", response)
+      setUnidadFija(response[0]);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching UnidadFija:', error);
+      setLoading(false);
     }
   };
 
   const addUnidadFija = async () => {
     try {
-      await axios.post('/api/UnidadFija', newUnidadFija); // Replace with your backend API endpoint
-      setNewUnidadFija({ fecha_actualizacion: '', valor: 0 });
+      if (!checkErrors()) {
+        return;
+      }
+      setLoading(true);
+      await updateCombustible(UnidadFija);
+      setLoading(false);
       getUnidadFija();
     } catch (error) {
       console.error('Error adding UnidadFija:', error);
     }
+  };
+
+  const checkErrors = () => {
+    if (UnidadFija.valor < 0 || UnidadFija.valor === 0) {
+      Alert.alert(
+        'Atención',
+        'El valor de las unidades de valor no puede ser 0 o negativo',
+        [{text: 'OK'}],
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const formatDate = (date: string) => {
+    const hour = date.split(',')[1];
+    const day = date.split(',')[0];
+
+    const UTC_3 = parseInt(hour.split(':')[0]) - 3;
+
+    return day + ',' + hour.replace(hour.split(':')[0], UTC_3.toString());
   };
 
   useEffect(() => {
@@ -40,6 +68,15 @@ const UnidadFija: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
       <View>
         <Text
           style={{
@@ -49,16 +86,14 @@ const UnidadFija: React.FC = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          Última actualización: {newUnidadFija.fecha_actualizacion}
+          Última actualización: {UnidadFija.fecha_actualizacion && formatDate(UnidadFija.fecha_actualizacion)}
         </Text>
 
         <TextInput
           label="valor"
-          value={newUnidadFija.valor}
+          value={UnidadFija.valor && UnidadFija.valor.toString()}
           keyboardType="number-pad"
-          onChangeText={value =>
-            setNewUnidadFija({ ...newUnidadFija, valor: value })
-          }
+          onChangeText={value => setUnidadFija({...UnidadFija, valor: parseFloat(value)})}
           style={styles.input}
         />
         <Button mode="contained" onPress={() => addUnidadFija()}>
