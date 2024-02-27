@@ -115,7 +115,7 @@ const TransporteDetalle = ({route}) => {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://scontent.firj1-1.fna.fbcdn.net/v/t39.30808-6/411672554_754087126761682_389622176565572570_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=783fdb&_nc_ohc=Auino-jaM8MAX9NqfxY&_nc_ht=scontent.firj1-1.fna&oh=00_AfALGcF66Ngnn3AycnsmvrowF_BwOq77rgVnt7jXNO9VSg&oe=65DA3793" alt="Logo">
+          <img src="https://infracciones-app.s3.sa-east-1.amazonaws.com/la_rioja_logo.jpeg" alt="Logo">
         </div>
 
         <div class="tipo_transporte">
