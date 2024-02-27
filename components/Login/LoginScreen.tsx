@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Image, Linking, Alert} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
@@ -15,6 +16,8 @@ const LoginScreen = () => {
   const [checkingLogin, setCheckingLogin] = useState(true);
   const [newVersion, setNewVersion] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const VERSION = 9;
 
   const handleLogin = async () => {
     setLoading(true);
@@ -51,33 +54,33 @@ const LoginScreen = () => {
   };
 
   const checkLogin = async () => {
+    checkNewVersion();
     const {getItem} = useAsyncStorage('loggedUser');
     const loggedUser = await getItem();
-    console.log("🚀 ~ checkLogin ~ loggedUser:", loggedUser)
+    console.log('🚀 ~ checkLogin ~ loggedUser:', loggedUser);
+
+    if (loggedUser) {
+      global.loggedUser = JSON.parse(loggedUser);
+      return;
+    }
 
     setTimeout(() => {
-      if (loggedUser) {
-        global.loggedUser = JSON.parse(loggedUser);
-        checkNewVersion();
-        return;
-      }
       setCheckingLogin(false);
     }, 2000);
   };
 
   const checkNewVersion = async () => {
-    const newVersion = await checkVersion();
+    const newVersionResponse = await checkVersion();
 
-    if (newVersion) {
-      if (newVersion.number > global.loggedUser.version.number) {
+    if (newVersionResponse) {
+      if (newVersionResponse.number > VERSION) {
         console.log('New version available');
-        setNewVersion(newVersion);
+        setNewVersion(newVersionResponse);
         const {removeItem} = useAsyncStorage('loggedUser');
         await removeItem();
-        checkLogin();
-        Linking.openURL(newVersion.uri).catch(err => console.error('An error occurred', err));
-      } else {
-        checkView(global.loggedUser.user.tipo);
+        Linking.openURL(newVersionResponse.uri).catch(err =>
+          console.error('An error occurred', err),
+        );
       }
     }
   };
@@ -137,6 +140,17 @@ const LoginScreen = () => {
       <Button mode="contained" onPress={handleLogin} style={styles.button}>
         Login
       </Button>
+
+      <Text
+        style={{
+          color: 'gray',
+          position: 'absolute',
+          bottom: 0,
+          marginBottom: 16,
+          alignSelf: 'center',
+        }}>
+        Version {VERSION}
+      </Text>
     </View>
   );
 };

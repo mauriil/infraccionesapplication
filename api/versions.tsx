@@ -3,11 +3,7 @@ import API_URL from './baseUrl';
 
 export const checkVersion = async () => {
   try {
-    const response = await axios.get(`${API_URL}versions`,  {
-      headers: {
-        Authorization: `Bearer ${global.loggedUser.token}`,
-      },
-    });
+    const response = await axios.get(`${API_URL}versions`);
     const newVersion = response.data;
 
     return newVersion;
