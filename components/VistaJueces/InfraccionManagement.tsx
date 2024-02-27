@@ -1,12 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {View, Text, FlatList, StyleSheet} from 'react-native';
+import {View, Text, FlatList, StyleSheet, Alert} from 'react-native';
 import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
-import { getAllNomencladores } from '../../api/nomencladores';
+import {getAllNomencladores, newNomenclador} from '../../api/nomencladores';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const InfraccionesManagement: React.FC = () => {
   const navigation = useNavigation();
@@ -16,20 +17,47 @@ const InfraccionesManagement: React.FC = () => {
     unidades_de_valor: 0,
   });
   const [showAddInfraccionFields, setShowAddInfraccionFields] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const getInfracciones = async () => {
     try {
+      setLoading(true);
       const response = await getAllNomencladores();
       setInfracciones(response);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching Infracciones:', error);
     }
   };
 
+  const checkErrors = () => {
+    if (newInfraccion.nombre.length < 4) {
+      alert('El nombre debe tener al menos 4 caracteres');
+      return false;
+    }
+    if (
+      newInfraccion.unidades_de_valor < 0 ||
+      newInfraccion.unidades_de_valor === 0
+    ) {
+      Alert.alert(
+        'Atención',
+        'El valor de las unidades de valor no puede ser 0 o negativo',
+        [{text: 'OK'}],
+      );
+      return false;
+    }
+    return true;
+  };
+
   const addInfraccion = async () => {
+    if (!checkErrors()) {
+      return;
+    }
     try {
-      await axios.post('/api/Infracciones', newInfraccion); // Replace with your backend API endpoint
+      setLoading(true);
+      await newNomenclador(newInfraccion);
       setNewInfraccion({nombre: '', unidades_de_valor: 0});
+      setLoading(false);
       getInfracciones();
     } catch (error) {
       console.error('Error adding Infraccion:', error);
@@ -61,6 +89,16 @@ const InfraccionesManagement: React.FC = () => {
         {showAddInfraccionFields ? 'Cancelar' : 'Añadir Nomenclador'}
       </Button>
 
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
+
       {/* Add Infraccion Form (conditionally rendered based on showAddInfraccionFields state) */}
       {showAddInfraccionFields && (
         <View>
@@ -71,13 +109,17 @@ const InfraccionesManagement: React.FC = () => {
               setNewInfraccion({...newInfraccion, nombre: value})
             }
             style={styles.input}
+            error={newInfraccion.nombre.length < 4}
           />
           <TextInput
             label="Unidades de vavlor"
             value={newInfraccion.unidades_de_valor}
             keyboardType="number-pad"
             onChangeText={value =>
-              setNewInfraccion({...newInfraccion, unidades_de_valor: value})
+              setNewInfraccion({
+                ...newInfraccion,
+                unidades_de_valor: parseFloat(value),
+              })
             }
             style={styles.input}
           />
@@ -97,8 +139,11 @@ const InfraccionesManagement: React.FC = () => {
         <FlatList
           data={Infracciones}
           keyExtractor={Infraccion => Infraccion._id}
+          style={{marginBottom: 35}}
           renderItem={({item: Infraccion}) => (
-            <TouchableOpacity onPress={() => handlePress(Infraccion)}>
+            <TouchableOpacity
+              onPress={() => handlePress(Infraccion)}
+              key={Infraccion._id}>
               <Card style={styles.card}>
                 <Card.Content>
                   <Title>{Infraccion.nombre}</Title>

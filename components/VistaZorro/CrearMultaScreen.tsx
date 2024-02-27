@@ -164,7 +164,6 @@ const CrearMultaScreen = ({navigation}) => {
           }}
         />
       )}
-      <Text style={styles.title}>Crear Multa</Text>
 
       <TextInput
         label="Número de Infracción"
@@ -172,6 +171,47 @@ const CrearMultaScreen = ({navigation}) => {
         onChangeText={text => setNroInfraccion(text)}
         style={styles.input}
       />
+
+      <Menu
+        visible={visible}
+        onDismiss={closeMenu}
+        style={styles.menu}
+        anchor={
+          <Button mode="outlined" onPress={openMenu} style={styles.menuButton}>
+            ↓ Seleccionar Infraccion/es
+          </Button>
+        }>
+        <ScrollView>
+          {listaInfracciones.map(infraccion => (
+            <Menu.Item
+              key={infraccion.id}
+              onPress={() => handleInfraccionSelect(infraccion.id)}
+              title={infraccion.nombre}
+              checked={infracciones.includes(infraccion.id)}
+            />
+          ))}
+        </ScrollView>
+      </Menu>
+
+      {infracciones.length > 0 && (
+        <View style={styles.infraccionesContainer}>
+          <Text>Infracciones Seleccionadas:</Text>
+          {infracciones.map(infraccionId => (
+            <View key={infraccionId} style={styles.infraccionItem}>
+              <Text>
+                {
+                  listaInfracciones.find(
+                    infraccion => infraccion.id === infraccionId,
+                  ).nombre
+                }
+              </Text>
+              <Button onPress={() => handleRemoveInfraccion(infraccionId)}>
+                Quitar
+              </Button>
+            </View>
+          ))}
+        </View>
+      )}
 
       <TextInput
         label="Dominio"
@@ -253,45 +293,6 @@ const CrearMultaScreen = ({navigation}) => {
         error={referenciaUbicacion.length < 4}
       />
 
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        style={styles.menu}
-        anchor={
-          <Button mode="outlined" onPress={openMenu} style={styles.menuButton}>
-            ↓ Seleccionar Infracciones
-          </Button>
-        }>
-        {listaInfracciones.map(infraccion => (
-          <Menu.Item
-            key={infraccion.id}
-            onPress={() => handleInfraccionSelect(infraccion.id)}
-            title={infraccion.nombre}
-            checked={infracciones.includes(infraccion.id)}
-          />
-        ))}
-      </Menu>
-
-      {infracciones.length > 0 && (
-        <View style={styles.infraccionesContainer}>
-          <Text>Infracciones Seleccionadas:</Text>
-          {infracciones.map(infraccionId => (
-            <View key={infraccionId} style={styles.infraccionItem}>
-              <Text>
-                {
-                  listaInfracciones.find(
-                    infraccion => infraccion.id === infraccionId,
-                  ).nombre
-                }
-              </Text>
-              <Button onPress={() => handleRemoveInfraccion(infraccionId)}>
-                Quitar
-              </Button>
-            </View>
-          ))}
-        </View>
-      )}
-
       <Button
         mode="contained"
         onPress={handleImagePicker}
@@ -338,6 +339,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     width: '80%',
     height: 'auto',
+    maxHeight: 400,
   },
   infraccionesContainer: {
     marginTop: 16,

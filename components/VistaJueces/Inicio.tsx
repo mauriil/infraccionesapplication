@@ -32,6 +32,10 @@ const VistaJuez = ({navigation}) => {
     navigation.navigate('LoginScreen');
   };
 
+  const handleABMUsuarios = () => {
+    navigation.navigate('ABMUsuarios');
+  };
+
   return (
     <View style={styles.container}>
 
@@ -59,6 +63,13 @@ const VistaJuez = ({navigation}) => {
 
       <Button mode="contained" onPress={handleAdminUnidadFija} style={styles.button}>
         Valor de unidad fija
+      </Button>
+
+      <Button
+        mode="contained"
+        onPress={handleABMUsuarios}
+        style={styles.button}>
+        Usuarios
       </Button>
 
       <Button

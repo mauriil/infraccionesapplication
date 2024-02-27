@@ -9,3 +9,11 @@ export const getAllNomencladores = async () => {
   });
   return response.data;
 };
+export const newNomenclador = async (nomenclador: any) => {
+  const response = await axios.post(`${API_URL}nomencladores`, nomenclador, {
+    headers: {
+      Authorization: `Bearer ${global.loggedUser.token}`,
+    },
+  });
+  return response.data;
+};
