@@ -17,6 +17,7 @@ import DetalleMultaParaJuezScreen from './components/VistaJueces/DetalleMultaPar
 import VistaAdmin from './components/VistaAdmin/Inicio';
 import UsersManagement from './components/VistaAdmin/UsersManagement';
 import UserDetalle from './components/VistaAdmin/UserDetalle';
+import UserEdit from './components/VistaAdmin/UserEdit';
 import TransporteManagement from './components/VistaAdmin/TransporteManagement';
 import TransporteDetalle from './components/VistaAdmin/TransporteDetalle';
 import TaxiManagement from './components/VistaAdmin/TaxiManagement';
@@ -199,6 +200,19 @@ const App = () => {
             component={UserDetalle}
             options={{
               title: 'Detalle de usuario',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="userEdit"
+            component={UserEdit}
+            options={{
+              title: 'Edición de usuario',
               headerShown: true,
               headerStyle: {
                 backgroundColor: CustomTheme.colors.primary,

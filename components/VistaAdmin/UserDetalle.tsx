@@ -1,9 +1,16 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import {View, StyleSheet, ScrollView, Text} from 'react-native';
+import { Button } from 'react-native-paper';
 
-const UserDetalle = ({ route }) => {
+const UserDetalle = ({route}) => {
   // Assuming the route params contain the details of the selected violation
-  const { user } = route.params;
+  const {user} = route.params;
+  const navigation = useNavigation();
+
+  const editUser = () => {
+    navigation.navigate('userEdit', { user });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -11,6 +18,32 @@ const UserDetalle = ({ route }) => {
         <Text style={styles.label}>Nombre:</Text>
         <Text>{user.name}</Text>
       </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Usuario:</Text>
+        <Text>{user.username}</Text>
+      </View>
+
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Tipo:</Text>
+        <Text>{user.tipo}</Text>
+      </View>
+
+      {user.tipo === 'Turismo' && (
+        <View style={styles.detailsContainer}>
+          <Text style={styles.label}>Nombre del hotel:</Text>
+          <Text>{user.nombre_hotel}</Text>
+        </View>
+      )}
+
+      <Button
+        mode="contained"
+        onPress={() => editUser()}
+        style={{
+          marginBottom: 15,
+        }}>
+        Editar datos
+      </Button>
     </ScrollView>
   );
 };

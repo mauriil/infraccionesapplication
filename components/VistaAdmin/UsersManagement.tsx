@@ -7,8 +7,10 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {getAllUsers, newUserRequest} from '../../api/usuarios';
 import {Picker} from '@react-native-picker/picker';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const UsersManagement: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const [users, setUsers] = useState([]);
   const randomId = Math.floor(Math.random() * 1000);
@@ -35,8 +37,10 @@ const UsersManagement: React.FC = () => {
 
   const getUsers = async () => {
     try {
+      setLoading(true);
       const response = await getAllUsers();
       setUsers(response);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
@@ -44,6 +48,7 @@ const UsersManagement: React.FC = () => {
 
   const addUser = async () => {
     try {
+      setLoading(true);
       await newUserRequest(newUser);
       ToastAndroid.showWithGravity(
         'Usuario creado',
@@ -51,6 +56,7 @@ const UsersManagement: React.FC = () => {
         ToastAndroid.CENTER,
       );
       setNewUser({name: '', username: '', password: ''});
+      setLoading(false);
       getUsers();
     } catch (error) {
       console.error('Error adding user:', error);
@@ -80,6 +86,16 @@ const UsersManagement: React.FC = () => {
       <Button onPress={() => setShowAddUserFields(!showAddUserFields)}>
         {showAddUserFields ? 'Cancelar' : 'Añadir Usuario'}
       </Button>
+
+      {loading && (
+        <Spinner
+          visible={loading}
+          textContent="Cargando"
+          textStyle={{
+            color: 'white',
+          }}
+        />
+      )}
 
       {/* Add User Form (conditionally rendered based on showAddUserFields state) */}
       {showAddUserFields && (
@@ -141,6 +157,7 @@ const UsersManagement: React.FC = () => {
         <FlatList
           data={users}
           keyExtractor={user => user._id}
+          style={{marginBottom: 35}}
           renderItem={({item: user}) => (
             <TouchableOpacity onPress={() => handlePress(user)}>
               <Card style={styles.card}>

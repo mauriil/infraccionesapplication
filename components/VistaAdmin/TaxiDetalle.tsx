@@ -211,7 +211,6 @@ const TaxiDetalle = ({ route }) => {
   };
 
   const editTaxiRemis = () => {
-    // Navigate to the edit screen passing the taxiRemis object as a route param
     navigation.navigate('taxiRemisEdit', { taxiRemis });
   };
 
