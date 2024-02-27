@@ -61,7 +61,7 @@ const LoginScreen = () => {
 
     if (loggedUser) {
       global.loggedUser = JSON.parse(loggedUser);
-      return;
+      checkView(global.loggedUser.user.tipo);
     }
 
     setTimeout(() => {

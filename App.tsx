@@ -21,6 +21,7 @@ import TransporteManagement from './components/VistaAdmin/TransporteManagement';
 import TransporteDetalle from './components/VistaAdmin/TransporteDetalle';
 import TaxiManagement from './components/VistaAdmin/TaxiManagement';
 import TaxiDetalle from './components/VistaAdmin/TaxiDetalle';
+import TaxiEdit from './components/VistaAdmin/TaxiEdit';
 import TurismoManagement from './components/VistaAdmin/TurismoManagement';
 import TurismoDetalle from './components/VistaAdmin/TurismoDetalle';
 import ListarMultasVistaJuez from './components/VistaJueces/ListarMultas';
@@ -252,6 +253,19 @@ const App = () => {
             component={TaxiDetalle}
             options={{
               title: 'Detalle',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: CustomTheme.colors.primary,
+              },
+              headerTintColor: CustomTheme.colors.text,
+              animationEnabled: true,
+            }}
+          />
+          <Stack.Screen
+            name="taxiRemisEdit"
+            component={TaxiEdit}
+            options={{
+              title: 'Edición de datos',
               headerShown: true,
               headerStyle: {
                 backgroundColor: CustomTheme.colors.primary,

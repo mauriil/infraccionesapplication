@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-import { Text, TextInput, Button, Menu } from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, ScrollView, Image, Alert} from 'react-native';
+import {Text, TextInput, Button, Menu} from 'react-native-paper';
 import {
   CameraOptions,
   ImagePickerResponse,
   launchCamera,
 } from 'react-native-image-picker';
-import { uploadImagesToS3 } from '../../api/aws';
-import { getAllInfracciones, nuevaInfraccion } from '../../api/infracciones';
-import { getAllNomencladores } from '../../api/nomencladores';
+import {uploadImagesToS3} from '../../api/aws';
+import {getAllInfracciones, nuevaInfraccion} from '../../api/infracciones';
+import {getAllNomencladores} from '../../api/nomencladores';
 import Spinner from 'react-native-loading-spinner-overlay';
 import MapView from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
 
-const CrearMultaScreen = ({ navigation }) => {
+const CrearMultaScreen = ({navigation}) => {
   const [dominio, setDominio] = useState('');
   const [nombrePropietario, setNombrePropietario] = useState('');
   const [nombreConductor, setNombreConductor] = useState('');
@@ -88,9 +89,24 @@ const CrearMultaScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (dominio.length < 6 || nombrePropietario.length < 4 || nombreConductor.length < 4 || domicilioConductor.length < 4 || marcaVehiculo.length < 4 || modeloVehiculo.length < 4 || colorVehiculo.length < 4 || nroLicenciaConducir.length < 7 || referenciaUbicacion.length < 4 || infracciones.length === 0 || selectedImages.length === 0) {
+    if (
+      dominio.length < 6 ||
+      nombrePropietario.length < 4 ||
+      nombreConductor.length < 4 ||
+      domicilioConductor.length < 4 ||
+      marcaVehiculo.length < 4 ||
+      modeloVehiculo.length < 4 ||
+      colorVehiculo.length < 4 ||
+      nroLicenciaConducir.length < 7 ||
+      referenciaUbicacion.length < 4 ||
+      infracciones.length === 0 ||
+      selectedImages.length === 0
+    ) {
       setLoading(false);
-      Alert.alert('Atención', 'Por favor, revise todos los campos y asegúrese de seleccionar al menos una infracción y una foto.');
+      Alert.alert(
+        'Atención',
+        'Por favor, revise todos los campos y asegúrese de seleccionar al menos una infracción y una foto.',
+      );
       return;
     }
     const imagesUrl = await uploadImages();
@@ -123,6 +139,18 @@ const CrearMultaScreen = ({ navigation }) => {
 
   useEffect(() => {
     void loadListaInfracciones();
+    Geolocation.getCurrentPosition(
+      success => {
+        console.log('success', success);
+        setUbicacionInfraccion(
+          `${success.coords.latitude}, ${success.coords.longitude}`,
+        );
+      },
+      err => {
+        console.log('err', err);
+      },
+      {},
+    );
   }, []);
 
   return (
@@ -208,14 +236,14 @@ const CrearMultaScreen = ({ navigation }) => {
         style={styles.input}
         error={nroLicenciaConducir.length < 7}
       />
-
+      {/*
       <TextInput
         label="Calle y Número de Ubicación"
         value={ubicacion_infraccion}
         onChangeText={text => setUbicacionInfraccion(text)}
         style={styles.input}
         error={ubicacion_infraccion.length < 4}
-      />
+      /> */}
 
       <TextInput
         label="Referencia de Ubicación"
@@ -273,7 +301,7 @@ const CrearMultaScreen = ({ navigation }) => {
 
       {selectedImages.map((imageUri, index) => (
         <View key={index} style={styles.imageContainer}>
-          <Image source={{ uri: imageUri }} style={styles.selectedImage} />
+          <Image source={{uri: imageUri}} style={styles.selectedImage} />
           <Button
             mode="outlined"
             onPress={() => handleRemoveImage(index)}

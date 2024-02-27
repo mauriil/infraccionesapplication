@@ -5,9 +5,10 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 import { request, PERMISSIONS } from 'react-native-permissions';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { useNavigation } from '@react-navigation/native';
 
 const TaxiDetalle = ({ route }) => {
-  // Assuming the route params contain the details of the selected violation
+  const navigation = useNavigation();
   const { taxiRemis } = route.params;
   const [taxi, setTaxi] = useState(taxiRemis);
   const [loading, setLoading] = useState(false);
@@ -209,7 +210,10 @@ const TaxiDetalle = ({ route }) => {
     }
   };
 
-
+  const editTaxiRemis = () => {
+    // Navigate to the edit screen passing the taxiRemis object as a route param
+    navigation.navigate('taxiRemisEdit', { taxiRemis });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -269,6 +273,12 @@ const TaxiDetalle = ({ route }) => {
         <Text style={styles.label}>Observaciones:</Text>
         <Text>{taxiRemis.observaciones}</Text>
       </View>
+
+      <Button mode="contained" onPress={() => editTaxiRemis()} style={{
+        marginBottom: 15,
+      }}>
+        Editar datos
+      </Button>
 
       <Button mode="contained" onPress={() => imprimirPoliza()} style={{
         marginBottom: 100,

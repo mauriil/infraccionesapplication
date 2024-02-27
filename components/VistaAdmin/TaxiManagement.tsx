@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ToastAndroid,
   Image,
+  RefreshControl,
 } from 'react-native';
 import {Button, Card, Paragraph, TextInput, Title} from 'react-native-paper';
 import axios from 'axios';
@@ -50,9 +51,11 @@ const TaxiRemisManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const getTaxiRemises = async () => {
+    setLoading(true);
     try {
       const response = await getAllTaxiRemises();
       setTaxiRemises(response);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching taxiRemises:', error);
     }
@@ -144,7 +147,7 @@ const TaxiRemisManagement: React.FC = () => {
       return true;
     }
     return false;
-  }
+  };
 
   const addTaxiRemis = async () => {
     if (checkErrors()) {
@@ -526,6 +529,10 @@ const TaxiRemisManagement: React.FC = () => {
       {!showAddTaxiRemisFields && taxiRemises.length > 0 && (
         <View style={{marginTop: 16}}>
           <FlatList
+            style={{height: '100%'}}
+            refreshControl={
+              <RefreshControl refreshing={loading} onRefresh={getTaxiRemises} />
+            }
             data={taxiRemises}
             keyExtractor={taxiRemis => taxiRemis._id}
             renderItem={({item: taxiRemis}) => (

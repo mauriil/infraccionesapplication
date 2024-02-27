@@ -10,11 +10,24 @@ export const getAllTaxiRemises = async () => {
   return response.data;
 };
 
-export const createNewTaxiRemis = async (taxiRemis) => {
+export const createNewTaxiRemis = async taxiRemis => {
   const response = await axios.post(`${API_URL}taxi-remis`, taxiRemis, {
     headers: {
       Authorization: `Bearer ${global.loggedUser.token}`,
     },
   });
   return response.data;
-}
+};
+
+export const updateTaxiRemis = async taxiRemis => {
+  const response = await axios.patch(
+    `${API_URL}taxi-remis/${taxiRemis.id}`,
+    taxiRemis,
+    {
+      headers: {
+        Authorization: `Bearer ${global.loggedUser.token}`,
+      },
+    },
+  );
+  return response.data;
+};
