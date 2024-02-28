@@ -17,7 +17,7 @@ const LoginScreen = () => {
   const [newVersion, setNewVersion] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const VERSION = 13;
+  const VERSION = 15;
 
   const handleLogin = async () => {
     setLoading(true);
