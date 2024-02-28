@@ -7,10 +7,8 @@ import {
   launchCamera,
 } from 'react-native-image-picker';
 import {uploadImagesToS3} from '../../api/aws';
-import {getAllInfracciones, nuevaInfraccion} from '../../api/infracciones';
+import {nuevaInfraccion} from '../../api/infracciones';
 import {getAllNomencladores} from '../../api/nomencladores';
-import Spinner from 'react-native-loading-spinner-overlay';
-import MapView from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
 const CrearMultaScreen = ({navigation}) => {
@@ -153,18 +151,15 @@ const CrearMultaScreen = ({navigation}) => {
     );
   }, []);
 
+  //prevet infinite loading screen
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+  }, [loading]);
+
   return (
     <ScrollView style={styles.container}>
-      {loading && (
-        <Spinner
-          visible={loading}
-          textContent="Cargando"
-          textStyle={{
-            color: 'white',
-          }}
-        />
-      )}
-
       <TextInput
         label="Número de Infracción"
         value={nroInfraccion}
@@ -312,8 +307,8 @@ const CrearMultaScreen = ({navigation}) => {
         </View>
       ))}
 
-      <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-        Crear Multa
+      <Button mode="contained" onPress={handleSubmit} style={styles.button} disabled={loading}>
+        {loading ? 'Cargando...' : 'Crear Multa'}
       </Button>
     </ScrollView>
   );

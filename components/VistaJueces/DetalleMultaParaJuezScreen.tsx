@@ -1,35 +1,56 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, StyleSheet, ScrollView, Text} from 'react-native';
+import {View, StyleSheet, ScrollView, Text, Image} from 'react-native';
 import {Button} from 'react-native-paper';
+import {padStart} from 'lodash';
 
 const DetalleMultaParaJuezScreen = ({route}) => {
   // Assuming the route params contain the details of the selected violation
   const {multa} = route.params;
 
+  const formatDate = date => {
+    date = new Date(date);
+    const day = date.getDate();
+    const month = padStart((date.getMonth() + 1).toString(), 2, '0');
+    const year = date.getFullYear();
+
+    const hours = padStart(date.getHours().toString(), 2, '0');
+    const minutes = padStart(date.getMinutes().toString(), 2, '0');
+    return `${year}-${month}-${day}  ${hours}:${minutes}`;
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Fecha:</Text>
-        <Text>{multa.date}</Text>
+        <Text>{formatDate(multa.createdAt)}</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Descripción:</Text>
-        <Text>{multa.description}</Text>
+        <Text style={styles.label}>Dominio:</Text>
+        <Text>{multa.dominio}</Text>
       </View>
-
-      {/* Add more details as needed based on your data structure */}
 
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Ubicación:</Text>
-        <Text>{multa.location}</Text>
+        <Text>{multa.ubicacion_infraccion}</Text>
       </View>
 
-      {/* Add other details as needed */}
+      <View style={styles.detailsContainer}>
+        <Text style={styles.label}>Referencia ubicación:</Text>
+        <Text>{multa.referencia_ubicacion}</Text>
+      </View>
 
-      <Text style={styles.label}>Comentarios Adicionales:</Text>
-      <Text>{multa.comments}</Text>
+      <View style={styles.detailsContainerPhoto}>
+        <Text style={styles.label}>Fotos:</Text>
+        {multa.foto.map((foto, index) => (
+          <Image
+            key={index}
+            source={{ uri: foto }}
+            style={{ width: 200, height: 200, marginBottom: 8 }}
+          />
+        ))}
+      </View>
 
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Estado de infraccion:</Text>
@@ -42,7 +63,7 @@ const DetalleMultaParaJuezScreen = ({route}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          En curso
+          {multa.estado}
         </Text>
         <View style={{flex: 1, flexDirection: 'row'}}>
           <Button
@@ -61,11 +82,11 @@ const DetalleMultaParaJuezScreen = ({route}) => {
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Vehiculo retenido:</Text>
+        <Text style={styles.liberacionTitle}>Vehiculo retenido: (en proceso de construccion)</Text>
         <Text>Corralon: El corralito</Text>
         <Text>Ubicacion: Calle falsa 123:</Text>
         <Text>Estado: Recibido </Text>
-        <Button mode="contained" onPress={() => console.log('Pressed')}>
+        <Button mode="contained" onPress={() => console.log('Pressed')} style={styles.liberacionBtn}>
           Aprobar liberacion
         </Button>
       </View>
@@ -94,6 +115,18 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 4,
+  },
+  detailsContainerPhoto: {
+    marginBottom: 50,
+  },
+  liberacionTitle: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+    fontSize: 24,
+  },
+  liberacionBtn: {
+    marginTop: 16,
+    marginBottom: 16,
   },
 });
 

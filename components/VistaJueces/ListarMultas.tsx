@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {TouchableOpacity, FlatList} from 'react-native-gesture-handler';
 import {
@@ -11,20 +11,15 @@ import {
   TextInput,
 } from 'react-native-paper';
 import DatePicker from '@react-native-community/datetimepicker';
+import {listaInfracciones} from '../../api/infracciones';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {padStart} from 'lodash';
 
 const ListarMultasVistaJuez = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
-  const [historialMultas, setHistorialMultas] = useState([
-    // Your historical violations data here
-    {id: '1', date: '2022-02-01 (435)', description: 'Exceso de velocidad'},
-    {
-      id: '2',
-      date: '2022-01-15 (436)',
-      description: 'Estacionamiento prohibido',
-    },
-    // Add more historical violations as needed
-  ]);
+  const [historialMultas, setHistorialMultas] = useState([]);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -37,12 +32,34 @@ const ListarMultasVistaJuez = () => {
     navigation.navigate('DetalleMultaParaJuezScreen', {multa});
   };
 
+  const requestMultas = async () => {
+    setLoading(true);
+    const multas = await listaInfracciones();
+    setHistorialMultas(multas);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    requestMultas();
+  }, []);
+
+  const formatDate = date => {
+    date = new Date(date);
+    const day = date.getDate();
+    const month = padStart((date.getMonth() + 1).toString(), 2, '0');
+    const year = date.getFullYear();
+
+    const hours = padStart(date.getHours().toString(), 2, '0');
+    const minutes = padStart(date.getMinutes().toString(), 2, '0');
+    return `${year}-${month}-${day}  ${hours}:${minutes}`;
+  };
+
   const renderItem = ({item}) => (
     <TouchableOpacity onPress={() => handleMultaPress(item)}>
       <Card style={styles.card}>
         <Card.Content>
-          <Title>{item.date}</Title>
-          <Paragraph>{item.description}</Paragraph>
+          <Title>{formatDate(item.createdAt)}</Title>
+          <Paragraph>{item.numero_infraccion}</Paragraph>
         </Card.Content>
       </Card>
     </TouchableOpacity>
@@ -50,6 +67,12 @@ const ListarMultasVistaJuez = () => {
 
   return (
     <View style={styles.container}>
+      <Spinner
+        visible={loading}
+        textContent={'Cargando...'}
+        textStyle={{color: '#FFF'}}
+      />
+
       <View style={styles.filtersContainer}>
         <View style={styles.filterItem}>
           <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
@@ -108,10 +131,6 @@ const ListarMultasVistaJuez = () => {
       ) : (
         <Text>No hay multas en el historial.</Text>
       )}
-
-      <Button mode="contained" onPress={() => console.log('View more')}>
-        Cargar Más
-      </Button>
     </View>
   );
 };
