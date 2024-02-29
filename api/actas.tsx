@@ -2,12 +2,17 @@ import axios from 'axios';
 import API_URL from './baseUrl';
 
 export const getAllActas = async () => {
-  const response = await axios.get(`${API_URL}actas`, {
-    headers: {
-      Authorization: `Bearer ${global.loggedUser.token}`,
-    },
-  });
-  return response.data;
+  try {
+    const response = await axios.get(`${API_URL}actas`, {
+      headers: {
+        Authorization: `Bearer ${global.loggedUser.token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error al traer actas', error.response.data);
+    throw error;
+  }
 };
 
 export const newActaRequest = async (newActa) => {

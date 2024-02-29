@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Image } from 'react-native';
 
 const DetalleActaScreen = ({ route }) => {
   // Assuming the route params contain the details of the selected violation
   const { acta } = route.params;
+  console.log("🚀 ~ DetalleActaScreen ~ acta:", acta)
 
   return (
     <ScrollView style={styles.container}>
@@ -11,29 +12,25 @@ const DetalleActaScreen = ({ route }) => {
 
       <View style={styles.detailsContainer}>
         <Text style={styles.label}>Fecha:</Text>
-        <Text>{acta.date}</Text>
+        <Text>{acta.fecha_recepcion}</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Descripción:</Text>
-        <Text>{acta.description}</Text>
+        <Text style={styles.label}>Corralon:</Text>
+        <Text>{acta.corralon.nombre}</Text>
       </View>
 
-      {/* Add more details as needed based on your data structure */}
-
-      <View style={styles.detailsContainer}>
-        <Text style={styles.label}>Ubicación:</Text>
-        <Text>{acta.location}</Text>
+      <View style={styles.detailsContainerPhoto}>
+        <Text style={styles.label}>Fotos:</Text>
+        {acta.fotos.map((foto, index) => (
+          <Image
+            key={index}
+            source={{ uri: foto }}
+            style={{ width: 200, height: 200, marginBottom: 8 }}
+          />
+        ))}
       </View>
 
-      {/* Add other details as needed */}
-
-      <Text style={styles.label}>Comentarios Adicionales:</Text>
-      <Text>{acta.comments}</Text>
-
-      {/* You can include additional details based on your data structure */}
-
-      {/* Add a "Go Back" button or navigation options based on your navigation setup */}
     </ScrollView>
   );
 };
@@ -55,6 +52,13 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 4,
+  },
+  detailsContainerPhoto: {
+    marginBottom: 16,
+  },
+  selectedImage: {
+    width: '100%',
+    height: 200,
   },
 });
 

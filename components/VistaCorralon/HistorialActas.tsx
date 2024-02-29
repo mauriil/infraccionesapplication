@@ -1,21 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { TouchableOpacity, FlatList } from 'react-native-gesture-handler';
 import { Button, Card, Title, Paragraph } from 'react-native-paper';
+import { getAllActas } from '../../api/actas';
 
 const HistorialActasScreen = () => {
   const navigation = useNavigation();
 
-  const [historialActas, setHistorialActas] = useState([
-    // Your historical violations data here
-    { id: '1', date: '2022-02-01 (0034)', description: 'Ingreso de FIAT' },
-    { id: '2', date: '2022-01-15 (0035)', description: 'Ingreso Ferrari' },
-    // Add more historical violations as needed
-  ]);
+  const [historialActas, setHistorialActas] = useState([]);
+
+  const fetchActas = async () => {
+    const response = await getAllActas();
+    setHistorialActas(response);
+  };
+
+  useEffect(() => {
+    fetchActas();
+  }, []);
 
   const handleActaPress = (acta) => {
-    // Navigate to DetalleActascreen with the selected acta details
     navigation.navigate('DetalleActaScreen', { acta });
   };
 
@@ -23,8 +27,8 @@ const HistorialActasScreen = () => {
     <TouchableOpacity onPress={() => handleActaPress(item)}>
       <Card style={styles.card}>
         <Card.Content>
-          <Title>{item.date}</Title>
-          <Paragraph>{item.description}</Paragraph>
+          <Title>{item.fecha_recepcion}</Title>
+          <Paragraph>Nro Infraccion: {item.infraccion.numero_infraccion}</Paragraph>
         </Card.Content>
       </Card>
     </TouchableOpacity>
@@ -41,10 +45,6 @@ const HistorialActasScreen = () => {
       ) : (
         <Text>No hay Actas en el historial.</Text>
       )}
-
-      <Button mode="contained" onPress={() => console.log('View more')}>
-        Cargar Más
-      </Button>
     </View>
   );
 };
