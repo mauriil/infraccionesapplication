@@ -34,3 +34,32 @@ export const listaInfracciones = async (zorroId = '') => {
     console.error('Error creating infraccion:', error);
   }
 };
+
+export const infraccionById = async id => {
+  try {
+    const response = await axios.get(`${API_URL}infracciones/${id}`, {
+      headers: {
+        Authorization: `Bearer ${global.loggedUser.token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating infraccion:', error);
+  }
+};
+
+export const infraccionByNumero = async numInfraccion => {
+  try {
+    const response = await axios.get(
+      `${API_URL}infracciones/byNum/${numInfraccion}`,
+      {
+        headers: {
+          Authorization: `Bearer ${global.loggedUser.token}`,
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error creating infraccion:', error);
+  }
+};

@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Text, Image} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useNavigation } from '@react-navigation/native';
-import { Button, TextInput } from 'react-native-paper';
-import { CameraOptions, ImagePickerResponse, launchCamera } from 'react-native-image-picker';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, ScrollView, Text, Image, Alert, ToastAndroid} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {useNavigation} from '@react-navigation/native';
+import {Button, TextInput} from 'react-native-paper';
+import {
+  CameraOptions,
+  ImagePickerResponse,
+  launchCamera,
+} from 'react-native-image-picker';
+import {getAllCorralones} from '../../api/corralones';
+import {infraccionByNumero} from '../../api/infracciones';
+import {uploadImagesToS3} from '../../api/aws';
+import {newActaRequest} from '../../api/actas';
 
 const CrearActaScreen = () => {
   const navigation = useNavigation();
@@ -11,17 +19,70 @@ const CrearActaScreen = () => {
   const [nombreReceptor, setNombreReceptor] = useState('');
   const [nroMulta, setNroMulta] = useState('');
   const [selectedCorralon, setSelectedCorralon] = useState('');
-  const [comentarios, setComentarios] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImagesToUpload, setSelectedImagesToUpload] = useState([]);
+  const [corralones, setCorralones] = useState([]);
+  const [infraccionError, setInfraccionError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const corralones = ['Corralón A', 'Corralón B', 'Corralón C']; // Add your corralones here
+  const uploadImages = async () => {
+    return await uploadImagesToS3(selectedImagesToUpload);
+  };
 
-  const handleCrearActa = () => {
-    // Implement your logic for creating an acta here
-    console.log({ nombreReceptor, nroMulta, selectedCorralon, comentarios });
+  const handleCrearActa = async () => {
+    if (nroMulta === '') {
+      Alert.alert('Error', 'Debe ingresar el número de multa');
+      setInfraccionError(true);
+      return;
+    }
+    if (nombreReceptor === '' || nombreReceptor.length < 4) {
+      Alert.alert('Error', 'Debe ingresar un nombre receptor válido');
+      return;
+    }
+    const infraccionExists = await infraccionByNumero(nroMulta);
+    if (!infraccionExists) {
+      Alert.alert('Error', 'La multa ingresada no existe');
+      setInfraccionError(true);
+      return;
+    }
+    setInfraccionError(false);
+    if (selectedImages.length === 0) {
+      Alert.alert('Error', 'Debe sacar al menos una foto');
+      return;
+    }
+    setLoading(true);
+    const imagesUrl = await uploadImages();
+    console.log({
+      nombre_receptor: nombreReceptor,
+      infraccion: infraccionExists.id,
+      corralon: selectedCorralon,
+      fotos: imagesUrl,
+    });
 
-    // Optionally, navigate to another screen after creating the acta
-    // navigation.navigate('SomeOtherScreen');
+    try {
+      await newActaRequest({
+        nombre_receptor: nombreReceptor,
+        infraccion: infraccionExists.id,
+        corralon: selectedCorralon,
+        fotos: imagesUrl,
+      });
+      ToastAndroid.showWithGravity(
+        'Acta creada con éxito',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+      setLoading(false);
+      navigation.navigate('VistaCorralon');
+    } catch (error) {
+      console.error('Error al crear acta', error);
+      setLoading(false);
+      Alert.alert('Error', 'Error al crear acta');
+    }
+  };
+
+  const fetchCorralones = async () => {
+    const response = await getAllCorralones();
+    setCorralones(response);
   };
 
   const handleImagePicker = () => {
@@ -38,6 +99,10 @@ const CrearActaScreen = () => {
         console.error('Camera error:', response.error);
       } else {
         setSelectedImages([...selectedImages, response.assets[0].uri]);
+        setSelectedImagesToUpload([
+          ...selectedImagesToUpload,
+          response.assets[0],
+        ]);
       }
     });
   };
@@ -48,40 +113,41 @@ const CrearActaScreen = () => {
     setSelectedImages(updatedImages);
   };
 
+  useEffect(() => {
+    fetchCorralones();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
       <TextInput
         label="Nombre Receptor"
         value={nombreReceptor}
-        onChangeText={(text) => setNombreReceptor(text)}
+        onChangeText={text => setNombreReceptor(text)}
         style={styles.input}
+        error={nombreReceptor.length < 4}
       />
 
       <TextInput
         label="Nro Multa"
         value={nroMulta}
-        onChangeText={(text) => setNroMulta(text)}
+        onChangeText={text => setNroMulta(text)}
         style={styles.input}
+        error={infraccionError}
       />
 
       <Text style={styles.label}>Corralón</Text>
       <Picker
         selectedValue={selectedCorralon}
-        onValueChange={(itemValue) => setSelectedCorralon(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Seleccionar Corralón" value="" />
+        onValueChange={itemValue => setSelectedCorralon(itemValue)}
+        style={styles.picker}>
         {corralones.map((corralon, index) => (
-          <Picker.Item key={index} label={corralon} value={corralon} />
+          <Picker.Item
+            key={index}
+            label={corralon.nombre}
+            value={corralon.id}
+          />
         ))}
       </Picker>
-
-      <TextInput
-        label="Comentarios"
-        value={comentarios}
-        onChangeText={(text) => setComentarios(text)}
-        style={styles.input}
-      />
 
       <Button
         mode="contained"
@@ -92,7 +158,7 @@ const CrearActaScreen = () => {
 
       {selectedImages.map((imageUri, index) => (
         <View key={index} style={styles.imageContainer}>
-          <Image source={{ uri: imageUri }} style={styles.selectedImage} />
+          <Image source={{uri: imageUri}} style={styles.selectedImage} />
           <Button
             mode="outlined"
             onPress={() => handleRemoveImage(index)}
@@ -102,8 +168,8 @@ const CrearActaScreen = () => {
         </View>
       ))}
 
-      <Button mode="contained" onPress={handleCrearActa} style={styles.button}>
-        Crear Acta
+      <Button mode="contained" onPress={handleCrearActa} style={styles.button} disabled={loading}>
+        {loading ? 'Creando...' : 'Crear Acta'}
       </Button>
     </ScrollView>
   );
