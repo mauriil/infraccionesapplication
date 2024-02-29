@@ -6,7 +6,7 @@ import { Button, TextInput } from 'react-native-paper';
 import { deleteUser, editUserData } from '../../api/usuarios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const editedUserDetalle = ({ route }) => {
+const EditedUserDetalle = ({ route }) => {
   // Assuming the route params contain the details of the selected violation
   const { user } = route.params;
   const navigation = useNavigation();
@@ -192,4 +192,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default editedUserDetalle;
+export default EditedUserDetalle;

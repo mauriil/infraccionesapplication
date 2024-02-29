@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Image, Linking, Alert} from 'react-native';
 import {Text, TextInput, Button} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
-import {login} from '../../api/login';
+import {checkToken, login} from '../../api/login';
 import {useAsyncStorage} from '@react-native-community/async-storage';
 import {checkVersion} from '../../api/versions';
 import {WebView} from 'react-native-webview';
@@ -55,9 +55,14 @@ const LoginScreen = () => {
 
   const checkLogin = async () => {
     checkNewVersion();
+    const validToken = await checkToken();
+    if (!validToken) {
+      const {removeItem} = useAsyncStorage('loggedUser');
+      await removeItem();
+    }
+
     const {getItem} = useAsyncStorage('loggedUser');
     const loggedUser = await getItem();
-    console.log('🚀 ~ checkLogin ~ loggedUser:', loggedUser);
 
     if (loggedUser) {
       global.loggedUser = JSON.parse(loggedUser);
@@ -76,8 +81,6 @@ const LoginScreen = () => {
       if (newVersionResponse.number > VERSION) {
         console.log('New version available');
         setNewVersion(newVersionResponse);
-        const {removeItem} = useAsyncStorage('loggedUser');
-        await removeItem();
         Linking.openURL(newVersionResponse.uri).catch(err =>
           console.error('An error occurred', err),
         );

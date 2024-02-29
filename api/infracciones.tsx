@@ -3,11 +3,15 @@ import API_URL from './baseUrl';
 
 export const nuevaInfraccion = async infraccionBody => {
   try {
-    const response = await axios.post(`${API_URL}infracciones`, infraccionBody, {
-      headers: {
-        Authorization: `Bearer ${global.loggedUser.token}`,
+    const response = await axios.post(
+      `${API_URL}infracciones`,
+      infraccionBody,
+      {
+        headers: {
+          Authorization: `Bearer ${global.loggedUser.token}`,
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Error creating infraccion:', error);
